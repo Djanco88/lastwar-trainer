@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "quelle": ["nutzerangabe"],
+  "hinweis": "Nur Test-Fixture (siehe docs/wissensbasis/spielstand.md), niemals App-Standard.",
+  "server": 977,
+  "hq_level": 30,
+  "tech_zentrum_level": 29,
+  "tech_zentrum_konflikt_notiz": "DATENLÜCKE: Tech-Zentrum 29 vs. 33 (beide führen); Fixture führt 29.",
+  "ressourcen": {
+    "nahrung": 1200000000,
+    "eisen": 800000000,
+    "gold": 350000000,
+    "oel": 120000000
+  },
+  "beschleuniger": {
+    "bau_1h": 40,
+    "forschung_1h": 25,
+    "heilung_5min": 10,
+    "universal_5min": 60
+  },
+  "gebaeude": [
+    { "id": "hq", "name_de": "Hauptquartier", "level": 30 },
+    { "id": "kaserne", "name_de": "Kaserne", "level": 30 },
+    { "id": "tech_zentrum", "name_de": "Tech-Zentrum", "level": 29 },
+    { "id": "mauer", "name_de": "Mauer", "level": 30 },
+    { "id": "lager", "name_de": "Lager", "level": 28 },
+    { "id": "saegewerk", "name_de": "Sägewerk", "level": 27 },
+    { "id": "eisenmine", "name_de": "Eisenmine", "level": 27 },
+    { "id": "oelfeld", "name_de": "Ölfeld", "level": 26 },
+    { "id": "goldmine", "name_de": "Goldmine", "level": 26 }
+  ],
+  "vip": { "level": 12, "punkte": 340, "punkte_naechster_level": 500 },
+  "waehrungen": { "diamanten": 45000, "universal_hero_shards": 120 },
+  "tech_forschung_prozent": { "entwicklung": 62, "militaer": 45, "wirtschaft": 30 },
+  "taktikkarten": { "anzahl": 14, "battle_karten": 3 },
+  "ueberlebende": 850000,
+  "dekorationen": ["Golden Marshal Statue", "S6 Base-Skin"],
+  "helden": [
+    { "held_id": "kimberly", "sterne": 5, "level": 80, "hp": 1000000, "angriff": 250000, "verteidigung": 180000, "gear": [10, 8, 6, 4], "erweckt": true, "faehigkeiten_level": [5, 5, 5, 5] },
+    { "held_id": "dva", "sterne": 4, "level": null, "hp": null, "angriff": null, "verteidigung": null, "gear": [8, 6, 4, 2], "erweckt": true, "erweckung_level": 20, "faehigkeiten_level": [5, 4, 3, 1] },
+    { "held_id": "tesla", "sterne": 4, "level": 70, "hp": 800000, "angriff": 300000, "verteidigung": 120000, "gear": [7, 5, 5, 3], "erweckt": false, "faehigkeiten_level": [5, 5, 4, 2] },
+    { "held_id": "murphy", "sterne": 3, "level": 60, "hp": 1200000, "angriff": 100000, "verteidigung": 300000, "gear": [6, 6, 4, 2], "erweckt": false, "faehigkeiten_level": [4, 4, 3, 2] },
+    { "held_id": "fiona", "sterne": 3, "level": 55, "hp": 700000, "angriff": 320000, "verteidigung": 110000, "gear": [5, 5, 3, 1], "erweckt": false, "faehigkeiten_level": [4, 3, 3, 1] },
+    { "held_id": "mason", "sterne": 3, "level": 50, "hp": 900000, "angriff": 200000, "verteidigung": 150000, "gear": [4, 4, 2, 2], "erweckt": false, "faehigkeiten_level": [3, 3, 2, 2] }
+  ],
+  "squad": ["kimberly", "murphy", "tesla", "fiona", "dva"],
+  "store_limits": [
+    { "name": "Diamanten-Paket klein", "pro_woche": 10, "pro_monat": 40, "gekauft_woche": 4, "gekauft_monat": 12 },
+    { "name": "Speedup-Bundle", "pro_woche": 20, "pro_monat": null, "gekauft_woche": 7, "gekauft_monat": 0 }
+  ],
+  "skill_baum_ist": {
+    "profession_level": 100,
+    "kern": {
+      "rapid_production": 5,
+      "outstanding_contribution": 1,
+      "extra_meal": 1,
+      "build_for_free": 5,
+      "research_for_free": 5,
+      "build_now": 5,
+      "research_now": 5,
+      "resource_saving": 5,
+      "recycling": 5,
+      "master_builder": 5,
+      "speedup_box": 5,
+      "one_more": 1
+    },
+    "saison_s6": {
+      "s6_combat_experience": 3,
+      "s6_building_inspiration_1": 3,
+      "s6_rainforest_style": 1,
+      "s6_double_exchange": 3,
+      "s6_professional_insights": 5,
+      "s6_extra_war_merit": 5
+    }
+  }
+}
+

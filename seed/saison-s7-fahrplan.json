@@ -1,0 +1,49 @@
+{
+  "saison": 7,
+  "name_de": "Rückkehr ins Goldene Empire / Golden Realm",
+  "name_en": "Return to the Golden Empire",
+  "pre_season_erste_server": {
+    "datum": "2026-11-09",
+    "server_batch": "3-164",
+    "quelle": ["cpt-hedge", "lastwarsurvival.com"],
+    "is_unsicher": false,
+    "konflikt_notiz": "Einige Community-Quellen nennen 'Ende Oktober / zweite Novemberwoche' (ldshop) -> 09.11.2026 (erste Batch) als belegter Wert führen."
+  },
+  "server_977": {
+    "hinweis": "DATENLÜCKE: S7-Termine für Server 977 unbekannt. Alle Termine null und im Event-Kalender editierbar (Countdown editierbar).",
+    "pre_season_start": null,
+    "haupt_start": null,
+    "celebration_week": null,
+    "off_season": null,
+    "editierbar": true
+  },
+  "zyklus": {
+    "pre_season_wochen": 2,
+    "haupt_saison_wochen": 8,
+    "celebration_week": 1,
+    "off_season": true,
+    "quelle": ["cpt-hedge", "lastwarcodex"]
+  },
+  "features_s7": [
+    { "name": "Combat Plan System", "quelle": ["packsify"], "is_unsicher": true, "konflikt_notiz": "offizieller Preview; drei Combat-Plan-Gruppen." },
+    { "name": "Neue Alliance Skills", "quelle": ["packsify"], "is_unsicher": true },
+    { "name": "Desert Storm (upgrade)", "quelle": ["packsify"], "is_unsicher": true },
+    { "name": "Goldust Conquest & Global Expedition (Rückkehr)", "quelle": ["packsify"], "is_unsicher": true },
+    { "name": "Exklusivwaffen neuer UR-Helden in Woche 1, 3, 6", "quelle": ["lastwarhub"], "is_unsicher": false }
+  ],
+  "events": [
+    { "id": "s7_pre_season", "name_de": "S7-Präseason", "start": null, "dauer_tage": 14, "server_977_editierbar": true, "quelle": ["cpt-hedge"] },
+    { "id": "s7_haupt", "name_de": "S7-Hauptsaison (Golden Empire)", "start": null, "dauer_tage": 56, "server_977_editierbar": true, "quelle": ["cpt-hedge"] },
+    { "id": "s7_ew_woche1", "name_de": "Exklusivwaffe Woche 1", "start": null, "server_977_editierbar": true, "quelle": ["lastwarhub"] },
+    { "id": "s7_ew_woche3", "name_de": "Exklusivwaffe Woche 3", "start": null, "server_977_editierbar": true, "quelle": ["lastwarhub"] },
+    { "id": "s7_ew_woche6", "name_de": "Exklusivwaffe Woche 6", "start": null, "server_977_editierbar": true, "quelle": ["lastwarhub"] },
+    { "id": "s7_celebration", "name_de": "Celebration Week", "start": null, "dauer_tage": 7, "server_977_editierbar": true, "quelle": ["cpt-hedge"] },
+    { "id": "s7_off_season", "name_de": "Off-Season / Siedlungsphase", "start": null, "wiederkehrend": "nach_haupt_saison", "server_977_editierbar": true, "quelle": ["cpt-hedge", "lastwarcodex"], "hinweis": "S6-Restbestände (Mushroom, Spore, War Merit, Bait, Fish, Tactics Cards) konvertieren in Profession-EXP; Saisonpunkte werden voll erstattet." },
+    { "id": "desert_storm", "name_de": "Desert Storm", "start": null, "wiederkehrend": "woechentlich", "server_977_editierbar": true, "quelle": ["packsify"] },
+    { "id": "capitol_conquest", "name_de": "Capitol Conquest", "start": null, "wiederkehrend": "woechentlich", "server_977_editierbar": true, "quelle": ["lastwarvault"] },
+    { "id": "svs", "name_de": "SvS / Faction Duel", "start": null, "wiederkehrend": "woechentlich", "server_977_editierbar": true, "quelle": ["lastwarvault"] },
+    { "id": "arena", "name_de": "Arena", "start": null, "wiederkehrend": "woechentlich", "server_977_editierbar": true, "quelle": ["lastwarsurvival.com"] },
+    { "id": "radar_mission", "name_de": "Radar-Mission (täglich)", "start": null, "wiederkehrend": "taeglich", "server_977_editierbar": true, "quelle": ["lastwarsurvival.com"] },
+    { "id": "store_reset", "name_de": "Store-Reset (Wochenlimit)", "start": null, "wiederkehrend": "montag_00:00_serverzeit", "server_977_editierbar": true, "quelle": ["nutzerangabe"] }
+  ]
+}

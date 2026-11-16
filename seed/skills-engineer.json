@@ -1,0 +1,165 @@
+{
+  "profession": "engineer",
+  "baum": "kern",
+  "level_cap": 100,
+  "budget_punkte_lv100": 125,
+  "budget_hinweis": "125 Punkte laut verbindlicher Vorgabe; lastwarvault nennt ca. 105+ bei Lv100 (a bit over one point per level) -> konflikt_notiz; Vorgabe gewinnt, im UI konfigurierbar.",
+  "tiers_pro_5_level": 21,
+  "skills_pro_tier": 2,
+  "kern_skills_gesamt": 42,
+  "tiers": [
+    {
+      "level": 1,
+      "skills": [
+        { "id": "rapid_production", "name_de": "Schnelle Produktion", "name_en": "Rapid Production", "max_level": 5, "effekt_pro_level": null, "effekt_max": "sofort bis zu 4h Nahrungs-/Eisen-/Gold-Produktion", "kategorie": "economy", "prioritaet": "prio", "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": true, "konflikt_notiz": "Reddit nennt +10 % Produktionstempo bei 5/5; lastwar-tutorial nennt 4h Sofort-Produktion -> Effekt-Details konfliktär." },
+        { "id": "outstanding_contribution", "name_de": "Hervorragender Beitrag", "name_en": "Outstanding Contribution", "max_level": 1, "effekt_pro_level": null, "effekt_max": "mehr Allianz-Beitragspunkte durch Tech-Spenden und Hilfe für Verbündete", "kategorie": "alliance", "prioritaet": "prio", "quelle": ["lastwarvault", "lastwar-tutorial.com", "lastwargame.online"], "is_unsicher": false, "konflikt_notiz": null }
+      ]
+    },
+    {
+      "level": 5,
+      "skills": [
+        { "id": "extra_meal", "name_de": "Extra-Mahlzeit", "name_en": "Extra Meal", "max_level": 1, "effekt_pro_level": null, "effekt_max": "tägliche Gratis-Stamina +50 % (2x75 statt 2x50)", "kategorie": "welfare", "prioritaet": "prio", "quelle": ["ldshop", "lastwarvault", "lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": null },
+        { "id": "siege_mastery", "name_de": "Belagerungsmeisterschaft", "name_en": "Siege Mastery", "max_level": null, "effekt_pro_level": null, "effekt_max": "+100 Festungsschaden der Einheiten; schaltet Ruinen-Räumung frei", "kategorie": "military", "prioritaet": null, "quelle": ["lastwar-tutorial.com", "ldshop"], "is_unsicher": true, "konflikt_notiz": "Max-Level in Quelle nicht genannt (DATENLÜCKE); ldshop nennt 'erhöht PvP-Schaden'." }
+      ]
+    },
+    {
+      "level": 10,
+      "skills": [
+        { "id": "build_for_free", "name_de": "Kostenlos bauen", "name_en": "Build for Free", "max_level": 5, "effekt_pro_level": null, "effekt_max": "verlängert Gratis-Bau-Beschleunigung (passiv, immer verfügbar)", "kategorie": "economy", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": true, "konflikt_notiz": "exakte Prozentwerte nicht belegt." },
+        { "id": "research_for_free", "name_de": "Kostenlos forschen", "name_en": "Research for Free", "max_level": 5, "effekt_pro_level": null, "effekt_max": "verlängert Gratis-Forschungs-Beschleunigung (passiv, immer verfügbar)", "kategorie": "economy", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": true, "konflikt_notiz": "wie Build for Free." }
+      ]
+    },
+    {
+      "level": 15,
+      "skills": [
+        { "id": "build_now", "name_de": "Jetzt bauen", "name_en": "Build Now", "max_level": 5, "effekt_pro_level": null, "effekt_max": "kürzt Bau-Queues um bis zu 600 Min. (10h)", "kategorie": "economy", "prioritaet": "prio", "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": "Cooldown-Skip durch One More Time belegt." },
+        { "id": "research_now", "name_de": "Jetzt forschen", "name_en": "Research Now", "max_level": 5, "effekt_pro_level": null, "effekt_max": "kürzt Forschungs-Queues um bis zu 1.200 Min. (20h)", "kategorie": "economy", "prioritaet": "prio", "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": null }
+      ]
+    },
+    {
+      "level": 20,
+      "skills": [
+        { "id": "siege_banner", "name_de": "Belagerungsbanner", "name_en": "Siege Banner", "max_level": 1, "effekt_pro_level": null, "effekt_max": "+100 Festungsschaden für Verbündete im Banner-Umkreis, 30 Min., stapelbar bis 5x", "kategorie": "military", "prioritaet": null, "quelle": ["lastwar-tutorial.com", "reddit.com"], "is_unsicher": false, "konflikt_notiz": null },
+        { "id": "rally_rush", "name_de": "Rally-Rausch", "name_en": "Rally Rush", "max_level": 5, "effekt_pro_level": null, "effekt_max": "erhöht Marschgeschwindigkeit bei Rally-Beitritt und Rückkehr", "kategorie": "military", "prioritaet": null, "quelle": ["lastwar-tutorial.com", "reddit.com", "lastwarvault"], "is_unsicher": false, "konflikt_notiz": null }
+      ]
+    },
+    {
+      "level": 25,
+      "skills": [
+        { "id": "friendly_aid", "name_de": "Freundliche Hilfe", "name_en": "Friendly Aid", "max_level": null, "effekt_pro_level": null, "effekt_max": "senkt Verlustquote der Einheiten beim Verstärken eines Verbündeten", "kategorie": "alliance", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": true, "konflikt_notiz": "lastwar-tutorial listet Friendly Aid doppelt (Lv25 und Lv30) -> vermutlich Kopierfehler der Quelle; lastwarvault: Lv25. Max-Level nicht genannt (DATENLÜCKE)." },
+        { "id": "siege_inspiration", "name_de": "Belagerungsinspiration", "name_en": "Siege Inspiration", "max_level": 3, "effekt_pro_level": null, "effekt_max": "+Profession-XP durch Schaden an Stadtfestung", "kategorie": "military", "prioritaet": null, "quelle": ["lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": "lastwar-tutorial nennt Lv25 und Lv30 doppelt; Platzierung Lv25 unsicher." }
+      ]
+    },
+    {
+      "level": 30,
+      "skills": [
+        { "id": "cooperative_construction", "name_de": "Kooperativer Bau", "name_en": "Cooperative Construction", "max_level": 2, "effekt_pro_level": null, "effekt_max": "+20 % Bautempo für dich + 1 Verbündeten, 60 Min., Cooldown 23,5h", "kategorie": "alliance", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com", "lastwargame.online"], "is_unsicher": true, "konflikt_notiz": "Max-Level: lastwar-tutorial/reddit 2, lastwarvault nennt 5 -> konflikt. lastwar-tutorial platziert Coop fälschlich bei Lv35." },
+        { "id": "cooperative_research", "name_de": "Kooperative Forschung", "name_en": "Cooperative Research", "max_level": 2, "effekt_pro_level": null, "effekt_max": "+20 % Forschungstempo für dich + 1 Verbündeten, 60 Min., Cooldown 23,5h", "kategorie": "alliance", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com", "lastwargame.online"], "is_unsicher": true, "konflikt_notiz": "wie Cooperative Construction." }
+      ]
+    },
+    {
+      "level": 35,
+      "skills": [
+        { "id": "resource_saving", "name_de": "Ressourcen sparen", "name_en": "Resource-Saving", "max_level": 5, "effekt_pro_level": null, "effekt_max": null, "kategorie": "economy", "prioritaet": "prio", "quelle": ["lastwarvault", "reddit.com"], "is_unsicher": true, "konflikt_notiz": "exakter Effekt nicht zweifelsfrei belegt (lastwargame.online: '-1 % Trainingskosten pro Level')." },
+        { "id": "recycling", "name_de": "Recycling", "name_en": "Recycling", "max_level": 5, "effekt_pro_level": null, "effekt_max": null, "kategorie": "economy", "prioritaet": "prio", "quelle": ["lastwarvault", "reddit.com"], "is_unsicher": true, "konflikt_notiz": "Effekt nicht extern belegt -> 'Effekt unbekannt'." }
+      ]
+    },
+    {
+      "level": 40,
+      "skills": [
+        { "id": "friendship_shield", "name_de": "Freundschaftsschild", "name_en": "Friendship Shield", "max_level": 3, "effekt_pro_level": null, "effekt_max": "Schutzschild 1-6h für dich oder einen Verbündeten", "kategorie": "alliance", "prioritaet": null, "quelle": ["lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": null },
+        { "id": "medical_aid", "name_de": "Sanitäre Hilfe", "name_en": "Medical Aid", "max_level": 5, "effekt_pro_level": null, "effekt_max": "erhöht Lazarett-Kapazität von dir und einem ausgewählten Verbündeten", "kategorie": "welfare", "prioritaet": "prio", "quelle": ["lastwar-tutorial.com", "lastwarvault"], "is_unsicher": false, "konflikt_notiz": "lastwarvault nennt Medical Aid als Off-Role-Skip; Vorgabe listet es als Prio." }
+      ]
+    },
+    {
+      "level": 45,
+      "skills": [
+        { "id": "drone_supply", "name_de": "Drohnenversorgung", "name_en": "Drone Supply", "max_level": 5, "effekt_pro_level": null, "effekt_max": "Ingenieur-Skill-Belohnung nach Einsatz (höheres Level = höhere Belohnung)", "kategorie": "military", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": null },
+        { "id": "fearless_defense", "name_de": "Unerschrockene Verteidigung", "name_en": "Fearless Defense", "max_level": 5, "effekt_pro_level": null, "effekt_max": "bei Base-Verteidigung erleidet der Angreifer bis zu 5 % Zusatzverluste (abhängig von Level und gefallenen Einheiten)", "kategorie": "military", "prioritaet": "skip", "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": null }
+      ]
+    },
+    {
+      "level": 50,
+      "skills": [
+        { "id": "random_visitors", "name_de": "Zufällige Besucher", "name_en": "Random Visitors", "max_level": 5, "effekt_pro_level": null, "effekt_max": "zufälliger Überlebender; Cooldown 119,5h; max. ineffektiv", "kategorie": "utility", "prioritaet": "skip", "quelle": ["lastwarvault", "lastwar-tutorial.com", "lastwargame.online"], "is_unsicher": false, "konflikt_notiz": null },
+        { "id": "durability_mine", "name_de": "Haltbarkeitsmine", "name_en": "Durability Mine", "max_level": 5, "effekt_pro_level": null, "effekt_max": "Mine auf leerem Feld senkt Zielfestung; bei Max brennt die gegnerische Base; max. 2 lagerbar; Cooldown 72h", "kategorie": "military", "prioritaet": "skip", "quelle": ["lastwarvault", "lastwar-tutorial.com", "lastwargame.online"], "is_unsicher": false, "konflikt_notiz": null }
+      ]
+    },
+    {
+      "level": 55,
+      "skills": [
+        { "id": "one_more", "name_de": "Noch ein Mal (Kisten)", "name_en": "One More (chest double)", "max_level": 5, "effekt_pro_level": null, "effekt_max": "bis zu 25 % Chance, Tagesaufgaben-Kisten doppelt zu erhalten", "kategorie": "welfare", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": true, "konflikt_notiz": "Namenskonflikt: lastwarvault 'One More' (Lv55) vs. Reddit/Vorgabe 'One More Time' (Lv100, Cooldown-Skip) — sind zwei verschiedene Skills." },
+        { "id": "support_boost", "name_de": "Support-Boost", "name_en": "Support Boost", "max_level": 5, "effekt_pro_level": null, "effekt_max": "spart bis zu 150 Sekunden pro Allianz-Hilfe (30s-Schritte pro Stufe)", "kategorie": "alliance", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com", "reddit.com"], "is_unsicher": false, "konflikt_notiz": null }
+      ]
+    },
+    {
+      "level": 60,
+      "skills": [
+        { "id": "efficient_gathering", "name_de": "Effizientes Sammeln", "name_en": "Efficient Gathering", "max_level": 5, "effekt_pro_level": null, "effekt_max": "+bis zu 25 % Sammeltempo", "kategorie": "gathering", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": null },
+        { "id": "first_aid_expert", "name_de": "Erste-Hilfe-Experte", "name_en": "First Aid Expert", "max_level": 5, "effekt_pro_level": null, "effekt_max": "+bis zu 5 % mehr in die Notaufnahme bei Niederlage", "kategorie": "welfare", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": null }
+      ]
+    },
+    {
+      "level": 65,
+      "skills": [
+        { "id": "battlefield_cleanup", "name_de": "Schlachtfeldräumung", "name_en": "Battlefield Cleanup", "max_level": 5, "effekt_pro_level": null, "effekt_max": "+bis zu 10 % mehr Gold/Nahrung/Eisen nach Bosskämpfen (Ironheads, Gluttons, Miserly, Elite of the Damned)", "kategorie": "military", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": null },
+        { "id": "master_builder", "name_de": "Meisterbauer", "name_en": "Master Builder", "max_level": 5, "effekt_pro_level": "+5 % Bau­geschwindigkeit pro Stufe", "effekt_max": "+25 % Bau­geschwindigkeit bei 5/5 (permanent, gilt auch für Saisongebäude)", "kategorie": "economy", "prioritaet": "prio", "quelle": ["lastwarvault", "lastwar-tutorial.com", "ldshop", "reddit.com"], "is_unsicher": false, "konflikt_notiz": null }
+      ]
+    },
+    {
+      "level": 70,
+      "skills": [
+        { "id": "instant_gathering", "name_de": "Sofortiges Sammeln", "name_en": "Instant Gathering", "max_level": null, "effekt_pro_level": null, "effekt_max": "sammelnde Truppen kehren sofort mit der vollen Restmenge zurück", "kategorie": "gathering", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com", "ldshop"], "is_unsicher": true, "konflikt_notiz": "Max-Level in Quelle nicht genannt (DATENLÜCKE); reddit 1/5." },
+        { "id": "monster_tracking", "name_de": "Monster-Verfolgung", "name_en": "Monster Tracking", "max_level": 5, "effekt_pro_level": null, "effekt_max": "+bis zu 25 % Marschtempo gegen Monster", "kategorie": "gathering", "prioritaet": null, "quelle": ["lastwarvault", "lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": null }
+      ]
+    },
+    {
+      "level": 75,
+      "skills": [
+        { "id": "free_teleport", "name_de": "Kostenloser Teleport", "name_en": "Free Teleport", "max_level": 3, "effekt_pro_level": null, "effekt_max": "gratis Fort-Teleport alle 71,5h, bis zu 3 lagerbar", "kategorie": "utility", "prioritaet": "prio", "quelle": ["lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": null },
+        { "id": "win_win_cooperation", "name_de": "Win-Win-Kooperation", "name_en": "Win-Win Cooperation", "max_level": 5, "effekt_pro_level": null, "effekt_max": "nur auf War-Leader-Mitglied anwendbar: -5 % Bau-/Forschungskosten für 24h; du erhältst eine Belohnung", "kategorie": "alliance", "prioritaet": "skip", "quelle": ["lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": "Effekt war DATENLÜCKE, jetzt belegt." }
+      ]
+    },
+    {
+      "level": 80,
+      "skills": [
+        { "id": "helping_hand", "name_de": "Hilfreiche Hand", "name_en": "Helping Hand", "max_level": 5, "effekt_pro_level": null, "effekt_max": "+bis zu 5 zusätzliche Assists (Hilfe-Eingänge)", "kategorie": "alliance", "prioritaet": null, "quelle": ["lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": "Effekt war DATENLÜCKE, jetzt belegt." },
+        { "id": "truck_expansion", "name_de": "Truck-Ausbau", "name_en": "Truck Expansion", "max_level": 5, "effekt_pro_level": null, "effekt_max": "+bis zu 25 % mehr Eisen/Gold/Nahrung pro Truck-Transport", "kategorie": "economy", "prioritaet": null, "quelle": ["lastwar-tutorial.com", "reddit.com"], "is_unsicher": false, "konflikt_notiz": "Effekt war DATENLÜCKE, jetzt belegt." }
+      ]
+    },
+    {
+      "level": 85,
+      "skills": [
+        { "id": "emergency_capacity", "name_de": "Notfall-Kapazität", "name_en": "Emergency Capacity", "max_level": 5, "effekt_pro_level": null, "effekt_max": "+bis zu 250 Plätze Notfall-/Lazarett-Kapazität", "kategorie": "welfare", "prioritaet": null, "quelle": ["lastwar-tutorial.com"], "is_unsicher": false, "konflikt_notiz": null },
+        { "id": "speedup_box", "name_de": "Beschleuniger-Box", "name_en": "Speedup Box", "max_level": 5, "effekt_pro_level": "4x 5-Minuten-Speedups pro Stufe", "effekt_max": "bis zu 5 zufällige Speedups pro Box; 20x 5-Min. bei 5/5 (~100 Min./Tag)", "kategorie": "welfare", "prioritaet": "prio", "quelle": ["lastwar-tutorial.com", "reddit.com"], "is_unsicher": false, "konflikt_notiz": "Reddit: 4x5min pro Level; lastwar-tutorial: 'bis zu 5 zufällige Speedups' -> leicht abweichend." }
+      ]
+    },
+    {
+      "level": 90,
+      "skills": [
+        { "id": "enhance_siege_banner", "name_de": "Belagerungsbanner verstärken", "name_en": "Enhance Siege Banner", "max_level": 1, "effekt_pro_level": null, "effekt_max": "verbessert Belagerungsbanner: zusätzlich +10 % Marsch-/Versammlungstempo (erst nach Max-Level des Banners)", "kategorie": "military", "prioritaet": null, "quelle": ["lastwar-tutorial.com", "reddit.com", "lastwargame.online"], "is_unsicher": false, "konflikt_notiz": "lastwargame.online nennt +3 % DEF für War-Leader-Charge-Banner-Upgrade -> andere Profession." },
+        { "id": "willing_helper", "name_de": "Hilfsbereiter Helfer", "name_en": "Willing Helper", "max_level": null, "effekt_pro_level": null, "effekt_max": "+50 Allianz-Beitragspunkte, bis zu 20x pro Tag", "kategorie": "alliance", "prioritaet": null, "quelle": ["lastwar-tutorial.com"], "is_unsicher": true, "konflikt_notiz": "Effekt war DATENLÜCKE, jetzt belegt; Max-Level nicht genannt (DATENLÜCKE)." }
+      ]
+    },
+    {
+      "level": 95,
+      "skills": [
+        { "id": "coop_research_2", "name_de": "Kooperative Forschung II", "name_en": "Cooperative Research II", "max_level": 5, "effekt_pro_level": null, "effekt_max": "+bis zu 25 % zusätzliches Forschungstempo (erst nach Max-Level Cooperative Research; gesamt bis 45 %)", "kategorie": "alliance", "prioritaet": null, "quelle": ["lastwar-tutorial.com", "reddit.com"], "is_unsicher": false, "konflikt_notiz": "Coop-II-Effekt war DATENLÜCKE, jetzt belegt (reddit: 20 % -> 45 %)." },
+        { "id": "coop_construction_2", "name_de": "Kooperativer Bau II", "name_en": "Cooperative Construction II", "max_level": 5, "effekt_pro_level": null, "effekt_max": "+bis zu 25 % zusätzliches Bautempo (erst nach Max-Level Cooperative Construction; gesamt bis 45 %)", "kategorie": "alliance", "prioritaet": null, "quelle": ["lastwar-tutorial.com", "reddit.com"], "is_unsicher": false, "konflikt_notiz": "wie Coop Research II." }
+      ]
+    },
+    {
+      "level": 100,
+      "skills": [
+        { "id": "one_more_time", "name_de": "Noch ein Mal", "name_en": "One More Time", "max_level": 5, "effekt_pro_level": null, "effekt_max": "bis zu 20 % Chance, dass aktiver Skill (hexagonales Symbol) keinen Cooldown auslöst; 1x pro Skill und Tag", "kategorie": "utility", "prioritaet": "prio", "quelle": ["lastwar-tutorial.com", "wardawgg", "reddit.com"], "is_unsicher": true, "konflikt_notiz": "wardawgg nennt 1 Punkt als Best-Invest, lastwar-tutorial/reddit 5/5 -> Max-Level unsicher." },
+        { "id": "blast", "name_de": "Detonation", "name_en": "Blast", "max_level": 1, "effekt_pro_level": null, "effekt_max": "War Frenzy an der eigenen Base + 60s Countdown; Explosion trifft 3 Nachbarbasen mit -25 % Festung", "kategorie": "military", "prioritaet": "skip", "quelle": ["lastwar-tutorial.com", "reddit.com"], "is_unsicher": false, "konflikt_notiz": "Effekt war DATENLÜCKE, jetzt belegt; reddit: 60s-Verzögerung macht ihn faktisch nutzlos." }
+      ]
+    }
+  ],
+  "unplatzierte_benannte_skills": [],
+  "prioritaet_reihenfolge": {
+    "quelle": ["nutzerangabe"],
+    "prio": ["one_more_time", "build_now", "research_now", "master_builder", "medical_aid", "rapid_production", "resource_saving", "recycling", "outstanding_contribution", "extra_meal", "free_teleport", "speedup_box"],
+    "skip": ["random_visitors", "durability_mine", "win_win_cooperation", "fearless_defense", "blast"]
+  }
+}
