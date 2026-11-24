@@ -99,6 +99,15 @@ function assert(cond, msg) {
   const game = els['game'];
   assert(typeof game.addEventListener === 'function', 'Canvas-Input gebunden');
 
+  const hq0 = LW.core.state.sides.player.buildings.find(b => b.type === 'hq');
+  const cc = LW.render3d.computeCamera(hq0.x, hq0.y, 1280, 720, 0.75);
+  const p = [hq0.x, 0, hq0.y, 1];
+  const clip = [0, 0, 0, 0];
+  for (let r = 0; r < 4; r++) for (let k = 0; k < 4; k++) clip[r] += cc.vp[k * 4 + r] * p[k];
+  const ndc = [clip[0] / clip[3], clip[1] / clip[3]];
+  assert(Math.abs(ndc[0]) <= 1 && Math.abs(ndc[1]) <= 1, '3D-Kamera projiziert HQ-Punkt sichtbar (NDC ' + ndc.map(v => v.toFixed(2)).join(',') + ')');
+  const sw = LW.render3d.screenToWorld ? null : null;
+
   console.log(failures === 0 ? '\nDOM SMOKE PASSED' : '\n' + failures + ' FAILED');
   process.exit(failures === 0 ? 0 : 1);
 })();

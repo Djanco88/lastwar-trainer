@@ -257,6 +257,36 @@ LW.render3d = {
     return o;
   },
 
+  computeCamera: function (camX, camY, vw, vh, zoom) {
+    var halfW = vw / (2 * zoom), halfH = vh / (2 * zoom);
+    var eye = [camX, 1000, camY - 800];
+    var tgt = [camX, 0, camY];
+    var zx = eye[0] - tgt[0], zy = eye[1] - tgt[1], zz = eye[2] - tgt[2];
+    var zl = Math.hypot(zx, zy, zz) || 1;
+    var z = [zx / zl, zy / zl, zz / zl];
+    var x = [z[2], 0, -z[0]];
+    var xl = Math.hypot(x[0], x[1], x[2]) || 1;
+    x = [x[0] / xl, x[1] / xl, x[2] / xl];
+    var y = [z[1] * x[2] - z[2] * x[1], z[2] * x[0] - z[0] * x[2], z[0] * x[1] - z[1] * x[0]];
+    var view = new Float32Array(16);
+    view[0] = x[0]; view[1] = y[0]; view[2] = z[0];
+    view[4] = x[1]; view[5] = y[1]; view[6] = z[1];
+    view[8] = x[2]; view[9] = y[2]; view[10] = z[2];
+    view[12] = -(x[0] * eye[0] + x[1] * eye[1] + x[2] * eye[2]);
+    view[13] = -(y[0] * eye[0] + y[1] * eye[1] + y[2] * eye[2]);
+    view[14] = -(z[0] * eye[0] + z[1] * eye[1] + z[2] * eye[2]);
+    view[15] = 1;
+    var proj = new Float32Array(16);
+    proj[0] = 1 / halfW; proj[5] = 1 / halfH;
+    proj[10] = -2 / (3000 - 100); proj[14] = -(3000 + 100) / (3000 - 100);
+    proj[15] = 1;
+    return {
+      view: view, proj: proj, vp: this.m4mul(proj, view),
+      eye: eye, right: x, upv: y, fwd: [-z[0], -z[1], -z[2]],
+      halfW: halfW, halfH: halfH,
+    };
+  },
+
   draw: function () {
     if (!this.ready || !this.active) return;
     try {
@@ -270,40 +300,17 @@ LW.render3d = {
       this.depthW = vw; this.depthH = vh;
     }
     var zoom = input.zoom || 0.75;
-    var halfW = vw / (2 * zoom), halfH = vh / (2 * zoom);
     var cam = input.cam;
-    var eye = [cam.x, 1000, cam.y - 800];
-    var tgt = [cam.x, 0, cam.y];
-    var f = [tgt[0] - eye[0], tgt[1] - eye[1], tgt[2] - eye[2]];
-    var fl = Math.hypot(f[0], f[1], f[2]); f = [f[0] / fl, f[1] / fl, f[2] / fl];
-    var r = [f[2], 0, -f[0]];
-    var rl = Math.hypot(r[0], r[1], r[2]) || 1; r = [r[0] / rl, r[1] / rl, r[2] / rl];
-    var u = [r[1] * f[2] - r[2] * f[1], r[2] * f[0] - r[0] * f[2], r[0] * f[1] - r[1] * f[0]];
-    this.eye = eye; this.fwd = f; this.right = r; this.upv = u;
-    this.halfW = halfW; this.halfH = halfH; this.vw = vw; this.vh = vh;
-
-    var view = new Float32Array(16);
-    var z = [-f[0], -f[1], -f[2]];
-    var x = [u[0], u[1], u[2]];
-    view[0] = x[0]; view[1] = u[0] * 0 + r[0] * 0 + 0; 
-    var y = [z[1] * x[2] - z[2] * x[1], z[2] * x[0] - z[0] * x[2], z[0] * x[1] - z[1] * x[0]];
-    view[0] = x[0]; view[1] = y[0]; view[2] = z[0];
-    view[4] = x[1]; view[5] = y[1]; view[6] = z[1];
-    view[8] = x[2]; view[9] = y[2]; view[10] = z[2];
-    view[12] = -(x[0] * eye[0] + x[1] * eye[1] + x[2] * eye[2]);
-    view[13] = -(y[0] * eye[0] + y[1] * eye[1] + y[2] * eye[2]);
-    view[14] = -(z[0] * eye[0] + z[1] * eye[1] + z[2] * eye[2]);
-    view[15] = 1;
-    var proj = new Float32Array(16);
-    proj[0] = 1 / halfW; proj[5] = 1 / halfH; proj[10] = -2 / 4000; proj[14] = -1.2; proj[15] = 1;
-    proj[10] = -2 / (3000 - 100); proj[14] = -(3000 + 100) / (3000 - 100);
-    var vp = this.m4mul(proj, view);
+    var cc = this.computeCamera(cam.x, cam.y, vw, vh, zoom);
+    this.eye = cc.eye; this.fwd = cc.fwd; this.right = cc.right; this.upv = cc.upv;
+    this.halfW = cc.halfW; this.halfH = cc.halfH; this.vw = vw; this.vh = vh;
+    var vp = cc.vp;
     var ub = new Float32Array(32);
     ub.set(vp, 0);
     var ld = [-0.35, 1, -0.25], ll = Math.hypot(ld[0], ld[1], ld[2]);
     ub[16] = ld[0] / ll; ub[17] = ld[1] / ll; ub[18] = ld[2] / ll; ub[19] = 0;
-    ub.set([r[0], r[1], r[2], 0], 20);
-    ub.set([u[0], u[1], u[2], 0], 24);
+    ub.set([cc.right[0], cc.right[1], cc.right[2], 0], 20);
+    ub.set([cc.upv[0], cc.upv[1], cc.upv[2], 0], 24);
     dev.queue.writeBuffer(this.uBuf, 0, ub);
 
     var BO = [], OO = [], BT = [], OT = [], PT = [];
