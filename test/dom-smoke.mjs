@@ -19,6 +19,7 @@ function makeEl(id) {
   const el = {
     id, children: [], style: {}, dataset: {}, width: 300, height: 150,
     clientWidth: 1000, clientHeight: 620,
+    parentElement: { clientWidth: 1260, clientHeight: 700 },
     className: '', innerHTML: '', textContent: '', title: '', disabled: false,
     classList: { add() {}, remove() {}, toggle() {}, contains() { return false; } },
     addEventListener() {}, removeEventListener() {},
@@ -63,7 +64,7 @@ sandbox.globalThis = sandbox;
 let nowMs = 0;
 const ctx = vm.createContext(sandbox);
 
-for (const f of ['config.js', 'utils.js', 'map.js', 'core.js', 'ai.js', 'audio.js', 'render.js', 'ui.js', 'input.js', 'main.js']) {
+for (const f of ['config.js', 'utils.js', 'map.js', 'core.js', 'ai.js', 'audio.js', 'render.js', 'render3d.js', 'ui.js', 'input.js', 'main.js']) {
   vm.runInContext(fs.readFileSync(path.join(root, 'src', f), 'utf8'), ctx, { filename: f });
 }
 
@@ -73,22 +74,29 @@ function assert(cond, msg) {
   else { failures++; console.error('FAIL -', msg); }
 }
 
-(listeners['load'] || []).forEach(cb => cb());
-const LW = ctx.window.LW || ctx.LW;
-assert(!!LW && !!LW.core.state, 'Boot: Core initialisiert nach load-Event');
-assert(els['sidebar'].children.length > 0 || els['sidebar'].innerHTML.length > 0, 'UI: Sidebar aufgebaut');
+(async () => {
+  (listeners['load'] || []).forEach(cb => cb());
+  await new Promise(r => setTimeout(r, 0));
+  const LW = ctx.window.LW || ctx.LW;
+  assert(!!LW && !!LW.core.state, 'Boot: Core initialisiert nach load-Event');
+  assert(els['sidebar'].children.length > 0 || els['sidebar'].innerHTML.length > 0, 'UI: Sidebar aufgebaut');
+  assert(LW.render3d && LW.render3d.active === false, 'Ohne WebGPU (Node): 2D-Fallback aktiv');
+  assert(els['game'].width === 1280 && els['game'].height === 720, 'Fixe Backbuffer-Auflösung 1280x720 (720p)');
 
-for (let i = 0; i < 180; i++) {
-  nowMs += 16.7;
-  const cb = rafQueue.shift();
-  if (!cb) break;
-  cb(nowMs);
-}
-assert(LW.core.state.tick > 100, 'Game-Loop läuft (' + LW.core.state.tick + ' Ticks simuliert)');
-assert(LW.core.state.sides.player.credits > 0, 'Ökonomie läuft im Browser-Loop');
+  for (let i = 0; i < 180; i++) {
+    nowMs += 16.7;
+    const cb = rafQueue.shift();
+    if (!cb) break;
+    cb(nowMs);
+    await new Promise(r => setTimeout(r, 0));
+  }
+  assert(LW.core.state.tick > 100, 'Game-Loop läuft (' + LW.core.state.tick + ' Ticks simuliert)');
+  assert(LW.core.state.sides.player.credits > 0, 'Ökonomie läuft im Browser-Loop');
+  assert(LW.input.mouse.sx === -1 && LW.input.cam.x === LW.input.cam.x, 'Maus startet außerhalb -> kein Dauer-Scroll (Edge-Pan inaktiv)');
 
-const game = els['game'];
-assert(typeof game.addEventListener === 'function', 'Canvas-Input gebunden');
+  const game = els['game'];
+  assert(typeof game.addEventListener === 'function', 'Canvas-Input gebunden');
 
-console.log(failures === 0 ? '\nDOM SMOKE PASSED' : '\n' + failures + ' FAILED');
-process.exit(failures === 0 ? 0 : 1);
+  console.log(failures === 0 ? '\nDOM SMOKE PASSED' : '\n' + failures + ' FAILED');
+  process.exit(failures === 0 ? 0 : 1);
+})();

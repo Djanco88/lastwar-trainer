@@ -3,7 +3,8 @@ var LW = (typeof window !== 'undefined' ? (window.LW = window.LW || {}) : (globa
 LW.input = {
   canvas: null,
   cam: { x: 0, y: 0 },
-  mouse: { sx: 0, sy: 0, wx: 0, wy: 0 },
+  zoom: 0.75,
+  mouse: { sx: -1, sy: -1, wx: 0, wy: 0 },
   keys: {},
   sel: { units: [], building: null },
   placing: null,
@@ -23,8 +24,9 @@ LW.input = {
     });
     window.addEventListener('mousemove', function (e) {
       var r = canvas.getBoundingClientRect();
-      self.mouse.sx = e.clientX - r.left;
-      self.mouse.sy = e.clientY - r.top;
+      var ps = self.pxScale || 1;
+      self.mouse.sx = (e.clientX - r.left) * ps;
+      self.mouse.sy = (e.clientY - r.top) * ps;
       if (self.drag) {
         self.drag.x2 = self.mouse.sx; self.drag.y2 = self.mouse.sy;
         if (Math.hypot(self.drag.x2 - self.drag.x1, self.drag.y2 - self.drag.y1) > 6) self.drag.moved = true;
@@ -41,6 +43,10 @@ LW.input = {
       e.preventDefault();
       self.command(self.mouse.sx, self.mouse.sy);
     });
+    canvas.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      self.zoom = LW.util.clamp(self.zoom * (e.deltaY > 0 ? 0.88 : 1.14), 0.35, 1.6);
+    }, { passive: false });
     window.addEventListener('keydown', function (e) { self.onKey(e); });
     window.addEventListener('resize', function () { self.resize(); });
     this.resize();
@@ -48,32 +54,52 @@ LW.input = {
 
   resize: function () {
     var c = this.canvas;
-    c.width = Math.max(320, c.clientWidth || 800);
-    c.height = Math.max(240, c.clientHeight || 600);
+    c.width = 1280;
+    c.height = 720;
+    var parent = c.parentElement;
+    if (parent) {
+      var aw = (parent.clientWidth || 1280) - 8, ah = (parent.clientHeight || 720) - 8;
+      var scale = Math.min(aw / 1280, ah / 720, 1);
+      if (!(scale > 0) || !isFinite(scale)) scale = 1;
+      c.style.width = Math.floor(1280 * scale) + 'px';
+      c.style.height = Math.floor(720 * scale) + 'px';
+    }
+    this.pxScale = c.clientWidth > 0 ? c.width / c.clientWidth : 1;
   },
 
   centerOn: function (b) {
     var cfg = LW.cfg, map = LW.map;
-    this.cam.x = LW.util.clamp(b.x - this.canvas.width / 2, 0, Math.max(0, map.W * cfg.tile - this.canvas.width));
-    this.cam.y = LW.util.clamp(b.y - this.canvas.height / 2, 0, Math.max(0, map.H * cfg.tile - this.canvas.height));
+    var vw = this.canvas.width, vh = this.canvas.height;
+    var worldW = map.W * cfg.tile, worldH = map.H * cfg.tile;
+    this.cam.x = LW.util.clamp(b.x, Math.min(vw / 2, worldW / 2), Math.max(worldW - vw / 2, worldW / 2));
+    this.cam.y = LW.util.clamp(b.y, Math.min(vh / 2, worldH / 2), Math.max(worldH - vh / 2, worldH / 2));
   },
 
   update: function (dt) {
     var cfg = LW.cfg, map = LW.map;
-    var sp = 540 * dt;
+    var sp = 540 * dt / (this.zoom || 0.75);
     var k = this.keys;
+    var vw = this.canvas.width, vh = this.canvas.height;
+    var worldW = map.W * cfg.tile, worldH = map.H * cfg.tile;
+    var m = this.mouse;
+    var edge = 26 * (this.pxScale || 1);
     if (k['a'] && !k['d'] || k['arrowleft']) this.cam.x -= sp;
     if (k['d'] && !k['a'] || k['arrowright']) this.cam.x += sp;
     if (k['w'] && !k['s'] || k['arrowup']) this.cam.y -= sp;
     if (k['s'] && !k['w'] || k['arrowdown']) this.cam.y += sp;
-    if (this.mouse.sx >= 0 && this.mouse.sx < 22) this.cam.x -= sp;
-    if (this.mouse.sx > this.canvas.width - 22) this.cam.x += sp;
-    if (this.mouse.sy >= 0 && this.mouse.sy < 22) this.cam.y -= sp;
-    if (this.mouse.sy > this.canvas.height - 22) this.cam.y += sp;
-    this.cam.x = LW.util.clamp(this.cam.x, 0, Math.max(0, map.W * cfg.tile - this.canvas.width));
-    this.cam.y = LW.util.clamp(this.cam.y, 0, Math.max(0, map.H * cfg.tile - this.canvas.height));
-    this.mouse.wx = this.cam.x + this.mouse.sx;
-    this.mouse.wy = this.cam.y + this.mouse.sy;
+    if (m.sx >= 0 && m.sx < edge) this.cam.x -= sp;
+    if (m.sx >= 0 && m.sx > vw - edge) this.cam.x += sp;
+    if (m.sy >= 0 && m.sy < edge) this.cam.y -= sp;
+    if (m.sy >= 0 && m.sy > vh - edge) this.cam.y += sp;
+    this.cam.x = LW.util.clamp(this.cam.x, Math.min(vw / 2, worldW / 2), Math.max(worldW - vw / 2, worldW / 2));
+    this.cam.y = LW.util.clamp(this.cam.y, Math.min(vh / 2, worldH / 2), Math.max(worldH - vh / 2, worldH / 2));
+    if (LW.render3d && LW.render3d.active && LW.render3d.ready) {
+      var w = LW.render3d.screenToWorld(m.sx < 0 ? vw / 2 : m.sx, m.sy < 0 ? vh / 2 : m.sy);
+      this.mouse.wx = w.x; this.mouse.wy = w.y;
+    } else {
+      this.mouse.wx = this.cam.x - vw / 2 + m.sx;
+      this.mouse.wy = this.cam.y - vh / 2 + m.sy;
+    }
   },
 
   click: function (sx, sy, shift) {
@@ -169,6 +195,9 @@ LW.input = {
         if (ready2) this.startTarget(ready2.id, '2');
         else { core.pushEvent('Keine Superwaffe bereit.', 'warn'); if (LW.audio) LW.audio.play('error'); }
       }
+    } else if (kind === 'hq') {
+      var hq = p.buildings.find(function (x) { return x.type === 'hq'; });
+      if (hq) this.centerOn(hq);
     } else if (kind === 'mute') {
       if (LW.audio) { LW.audio.muted = !LW.audio.muted; document.getElementById('btn-mute').textContent = LW.audio.muted ? '🔇' : '🔊'; }
     }

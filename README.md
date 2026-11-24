@@ -7,6 +7,12 @@
 - `index.html` direkt im Browser öffnen (funktioniert via `file://`), oder
 - `python3 -m http.server` im Repo-Ordner und `http://localhost:8000` aufrufen.
 
+## Grafik / Engine
+
+- **3D-Renderer auf WebGPU** (`src/render3d.js`, rohes WGSL, keine Abhängigkeiten): WebGPU läuft auf Desktop-Browsern (Chrome/Edge/Firefox) direkt auf **Vulkan** — dort wird automatisch die 3D-Ansicht (isometrische Kamera) genutzt. Ohne WebGPU (z. B. Safari) gibt es automatischen **2D-Canvas-Fallback** (`src/render.js`).
+- Fixe interne Backbuffer-Auflösung **1280×720 (720p), 24-Bit-Farbe** (8 Bit/Kanal), per CSS auf Fenstergröße skaliert.
+- Die Spiel-Logik (`src/core.js`) ist renderer-unabhängig und headless testbar.
+
 ## Ziel
 
 Baue deine Basis aus, sammle Rohstoffe, produziere Armee und zerstöre die gegnerische Kommandozentrale. Wird deine Kommandozentrale zerstört, ist das Spiel verloren.
@@ -58,7 +64,8 @@ Jedes Gebäude verbraucht/erzeugt Strom (Werte siehe Tooltips). Bei Defizit (Anz
 
 - Linksklick: auswählen / Gebäude platzieren / Superwaffen-Ziel
 - Rechtsklick: bewegen / angreifen / Sammler auf Rohstoff schicken / Rally-Punkt setzen
-- Ziehen: Box-Auswahl; Kamera: WASD/Pfeile/Bildschirmrand
+- Ziehen: Box-Auswahl; Kamera: WASD/Pfeile/Bildschirmrand (nur wenn die Maus am Rand ist)
+- **Mausrad: Zoom** (rein/raus); **`H`: Sprung zum Hauptquartier (HQ)**
 - Hotkeys auf den Buttons (z. B. `Q` Raffinerie, `T` Nukleararsenal, `N` Superwaffe, `M` Ton)
 - `Esc`: Abbrechen
 

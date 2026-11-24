@@ -14,22 +14,30 @@ window.addEventListener('load', function () {
     LW.audio.muted = !LW.audio.muted;
     this.textContent = LW.audio.muted ? '🔇' : '🔊';
   });
-  var last = performance.now(), acc = 0;
-  function frame(now) {
-    var dt = (now - last) / 1000;
-    last = now;
-    acc += dt;
-    var steps = 0;
-    while (acc >= 1 / 60 && steps < 5) {
-      LW.core.tick(1 / 60);
-      LW.input.update(1 / 60);
-      acc -= 1 / 60;
-      steps++;
+  var use3d = false;
+  var initP = (LW.render3d && LW.render3d.init) ? LW.render3d.init(document.getElementById('game')) : Promise.resolve(false);
+  Promise.resolve(initP).then(function (ok) {
+    use3d = !!ok;
+    if (LW.render3d) LW.render3d.active = use3d;
+    if (!use3d && typeof console !== 'undefined') console.info('WebGPU nicht verfügbar — 2D-Canvas-Fallback aktiv.');
+    var last = performance.now(), acc = 0;
+    function frame(now) {
+      var dt = (now - last) / 1000;
+      last = now;
+      acc += dt;
+      var steps = 0;
+      while (acc >= 1 / 60 && steps < 5) {
+        LW.core.tick(1 / 60);
+        LW.input.update(1 / 60);
+        acc -= 1 / 60;
+        steps++;
+      }
+      if (acc > 0.25) acc = 0.25;
+      if (use3d) LW.render3d.draw();
+      else LW.render.draw();
+      LW.ui.update();
+      requestAnimationFrame(frame);
     }
-    if (acc > 0.25) acc = 0.25;
-    LW.render.draw();
-    LW.ui.update();
     requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
+  });
 });

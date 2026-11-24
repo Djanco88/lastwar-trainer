@@ -127,6 +127,6 @@ LW.cfg = {
     z: ['research', 'plasma'], x: ['research', 'armor'], c: ['research', 'solar'],
     v: ['research', 'hbomb'], b: ['research', 'weather'], '5': ['research', 'fastbuild'],
     '4': ['research', 'antimatter'], '3': ['research', 'diffuser'], '6': ['build', 'diffuser'],
-    n: ['super'], m: ['mute'],
+    n: ['super'], m: ['mute'], h: ['hq'],
   },
 };

@@ -36,7 +36,7 @@ LW.ui = {
     html += '<h3>Superwaffen</h3><div id="superlist"></div>';
     html += '<h3>Auswahl</h3><div id="selinfo"></div>';
     html += '<canvas id="minimap" width="232" height="174"></canvas>';
-    html += '<div id="hint">Linksklick: auswählen / bauen<br>Rechtsklick: bewegen / angreifen / Rohstoff abbauen (Sammler)<br>Ziehen: Box-Auswahl<br>Kamera: WASD / Pfeile / Bildschirmrand<br>Esc: Abbrechen<br>Hotkeys siehe Buttons. Superwaffe: N, dann Ziel klicken.</div>';
+    html += '<div id="hint">Linksklick: auswählen / bauen<br>Rechtsklick: bewegen / angreifen / Rohstoff abbauen (Sammler)<br>Ziehen: Box-Auswahl<br>Kamera: WASD / Pfeile / Bildschirmrand (nur bei Maus am Rand)<br>Mausrad: Zoom<br>H: Sprung zum HQ<br>Esc: Abbrechen<br>Hotkeys siehe Buttons. Superwaffe: N, dann Ziel klicken.</div>';
     sb.innerHTML = html;
     var secB = document.getElementById('sec-build'), secU = document.getElementById('sec-units'), secR = document.getElementById('sec-res');
     var k;

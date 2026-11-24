@@ -178,7 +178,7 @@ LW.render = {
     var cam = input.cam;
     var shx = (Math.random() - 0.5) * st.shake, shy = (Math.random() - 0.5) * st.shake;
     c.save();
-    c.translate(-cam.x + shx, -cam.y + shy);
+    c.translate(-(cam.x - canvas.width / 2) + shx, -(cam.y - canvas.height / 2) + shy);
     c.drawImage(this.terrain, 0, 0);
     var i;
     for (i = 0; i < map.oreTiles.length; i++) {
@@ -306,6 +306,6 @@ LW.render = {
     }
     var canvas = document.getElementById('game');
     c.strokeStyle = 'rgba(255,255,255,0.8)'; c.lineWidth = 1;
-    c.strokeRect(input.cam.x * s, input.cam.y * s, canvas.width * s, canvas.height * s);
+    c.strokeRect((input.cam.x - canvas.width / 2) * s, (input.cam.y - canvas.height / 2) * s, canvas.width * s, canvas.height * s);
   },
 };
