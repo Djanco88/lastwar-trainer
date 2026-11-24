@@ -16,10 +16,11 @@ function makeCtx2d() {
 }
 
 function makeEl(id) {
+  const pe = { clientWidth: 1260, clientHeight: 700, replaceChild(n) { els[n.id] = n; } };
   const el = {
     id, children: [], style: {}, dataset: {}, width: 300, height: 150,
     clientWidth: 1000, clientHeight: 620,
-    parentElement: { clientWidth: 1260, clientHeight: 700, replaceChild(n) { els[n.id] = n; } },
+    parentElement: pe, parentNode: pe,
     cloneNode() { const c = makeEl(this.id); c.style = Object.assign({}, this.style); return c; },
     className: '', innerHTML: '', textContent: '', title: '', disabled: false,
     classList: { add() {}, remove() {}, toggle() {}, contains() { return false; } },
