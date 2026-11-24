@@ -39,7 +39,7 @@ LW.render3d = {
   buildPipelines: function () {
     var dev = this.device;
     var uLayout = dev.createBindGroupLayout({
-      entries: [{ binding: 0, visibility: GPUBufferUsage ? 0x30 : 0x30, buffer: { type: 'uniform' } }],
+      entries: [{ binding: 0, visibility: (typeof GPUShaderStage !== 'undefined' ? GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT : 3), buffer: { type: 'uniform' } }],
     });
     var uBuf = dev.createBuffer({ size: 128, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
     this.uBuf = uBuf;
@@ -473,8 +473,12 @@ LW.render3d = {
       this.active = false;
       this.ready = false;
       if (typeof console !== 'undefined') console.error('3D-Renderer deaktiviert, Fallback auf 2D:', err);
-      var d = typeof document !== 'undefined' && document.getElementById('errbanner');
-      if (d) d.textContent = 'WebGPU-Fehler (Fallback 2D aktiv): ' + (err && err.message ? err.message : err);
+      if (typeof document !== 'undefined') {
+        var d = document.getElementById('errbanner');
+        if (!d) { d = document.createElement('div'); d.id = 'errbanner'; document.body.appendChild(d); }
+        d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#a02020;color:#fff;padding:6px 10px;font:12px monospace;z-index:999;white-space:pre-wrap;max-height:40vh;overflow:auto;';
+        d.textContent = 'WebGPU-Fehler (Fallback 2D aktiv): ' + (err && err.message ? err.message : err) + (err && err.stack ? '\n' + err.stack : '');
+      }
     }
   },
 

@@ -44,6 +44,20 @@ window.addEventListener('load', function () {
     badge.style.color = use3d ? '#9fe6a0' : '#ffd23c';
     document.getElementById('topbar').appendChild(badge);
     var frameErrShown = false;
+    var swapped2d = false;
+    function ensure2dCanvas() {
+      if (swapped2d) return;
+      swapped2d = true;
+      var old = document.getElementById('game');
+      if (!old) return;
+      var nc = old.cloneNode(false);
+      nc.id = old.id;
+      nc.style.cssText = old.style.cssText;
+      old.parentNode.replaceChild(nc, old);
+      LW.input.bindCanvas(nc);
+      var badge = document.getElementById('tb-mode');
+      if (badge) { badge.textContent = '2D-Fallback'; badge.style.color = '#ffd23c'; }
+    }
     function showBanner(text) {
       var d = document.getElementById('errbanner');
       if (!d) { d = document.createElement('div'); d.id = 'errbanner'; document.body.appendChild(d); }
@@ -65,7 +79,7 @@ window.addEventListener('load', function () {
         }
         if (acc > 0.25) acc = 0.25;
         if (LW.render3d && LW.render3d.active) LW.render3d.draw();
-        else LW.render.draw();
+        else { if (use3d) ensure2dCanvas(); LW.render.draw(); }
         LW.ui.update();
       } catch (err) {
         if (!frameErrShown) {
