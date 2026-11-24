@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LASTWAR — RTS-Prototyp</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <div id="topbar">
+    <span class="tb-item" id="tb-credits">Credits: 0</span>
+    <span class="tb-item" id="tb-income"></span>
+    <span class="tb-item" id="tb-units">Einheiten: 0</span>
+    <span class="tb-item" id="tb-time">0:00</span>
+    <span class="tb-item tb-right">
+      <button id="btn-mute" class="mini-btn" title="Ton an/aus (M)">🔊</button>
+    </span>
+  </div>
+  <canvas id="game"></canvas>
+  <div id="sidebar"></div>
+  <div id="messages"></div>
+  <div id="overlay" class="hidden">
+    <div id="overlay-box">
+      <h1 id="overlay-title"></h1>
+      <p id="overlay-text"></p>
+      <button id="btn-restart">Neu starten</button>
+    </div>
+  </div>
+</div>
+<script src="src/config.js"></script>
+<script src="src/utils.js"></script>
+<script src="src/map.js"></script>
+<script src="src/core.js"></script>
+<script src="src/ai.js"></script>
+<script src="src/audio.js"></script>
+<script src="src/render.js"></script>
+<script src="src/ui.js"></script>
+<script src="src/input.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>
