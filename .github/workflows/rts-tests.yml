@@ -1,0 +1,23 @@
+name: RTS-Prototyp-Tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [vibe/*]
+
+jobs:
+  js-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Syntax-Check (alle src + tests)
+        run: |
+          for f in src/*.js test/*.mjs; do node --check "$f" || exit 1; done
+      - name: Engine-Smoke-Tests
+        run: node test/smoke.mjs
+      - name: DOM-Boot-Test
+        run: node test/dom-smoke.mjs
