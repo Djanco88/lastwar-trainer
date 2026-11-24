@@ -16,7 +16,13 @@ window.addEventListener('load', function () {
     this.textContent = LW.audio.muted ? '🔇' : '🔊';
   });
   var use3d = false;
-  var initP = (LW.render3d && LW.render3d.init) ? LW.render3d.init(document.getElementById('game')) : Promise.resolve(false);
+  var initP;
+  try {
+    initP = (LW.render3d && LW.render3d.init) ? LW.render3d.init(document.getElementById('game')) : Promise.resolve(false);
+  } catch (e) {
+    if (typeof console !== 'undefined') console.warn('WebGPU init fehlgeschlagen, 2D-Fallback:', e);
+    initP = Promise.resolve(false);
+  }
   Promise.resolve(initP).then(function (ok) {
     use3d = !!ok;
     if (LW.render3d) LW.render3d.active = use3d;
