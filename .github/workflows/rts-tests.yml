@@ -21,3 +21,11 @@ jobs:
         run: node test/smoke.mjs
       - name: DOM-Boot-Test
         run: node test/dom-smoke.mjs
+
+  rust-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Rust-Tests (engine-rs / lastwar-core)
+        run: cd engine-rs && cargo test

@@ -1,0 +1,18 @@
+# Netlify: statisches Deployment des Repo-Root (index.html) auf jedem Branch/PR.
+# Repo in der Netlify-App mit diesem Branch verbinden -> dauerhaftes Hosting inkl. Branch-Deploys.
+[build]
+  publish = "."
+
+# Statische Assets dürfen gecacht werden, HTML/JS immer frisch (neue Builds sofort sichtbar)
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/src/*"
+  [headers.values]
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/style.css"
+  [headers.values]
+    Cache-Control = "no-cache"

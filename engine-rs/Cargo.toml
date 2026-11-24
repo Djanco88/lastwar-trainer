@@ -1,0 +1,9 @@
+[package]
+name = "lastwar-core"
+version = "0.1.0"
+edition = "2021"
+description = "Eigenständiger RTS-Simulationskern (LASTWAR-Prototyp) — keine externen Assets/Inhalte"
+
+[lib]
+name = "lastwar_core"
+path = "src/lib.rs"

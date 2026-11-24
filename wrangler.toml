@@ -1,0 +1,6 @@
+# Cloudflare Pages: statisches Deployment des Repo-Root (index.html).
+# Deploy z.B. per "wrangler pages deploy . --project-name=lastwar-trainer"
+# oder das Git-Repo in Cloudflare Pages mit diesem Branch verbinden (dauerhaft, inkl. PR-Previews).
+name = "lastwar-trainer"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "."

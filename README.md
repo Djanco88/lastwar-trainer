@@ -74,5 +74,32 @@ Jedes Gebäude verbraucht/erzeugt Strom (Werte siehe Tooltips). Bei Defizit (Anz
 Headless-Simulation der Engine (Ökonomie, Fraktionsregeln, Strom/EMP, Superwaffen-Stufen, Strahlung/Mutationen, Neutrinos, Kreuzungen, KI-Langlauf):
 
 ```bash
-node test/smoke.mjs
+node test/smoke.mjs        # Engine-Szenarien
+node test/dom-smoke.mjs    # DOM-Boot-Test (Canvas, Kamera, kein Dauer-Scroll)
 ```
+
+## Rust-Kern (`engine-rs/`)
+
+Abhängigkeitsfreier Rust-Port der Engine (`lastwar-core`), gespiegelt an den JS-Smoke-Tests (14 Tests):
+
+```bash
+cd engine-rs && cargo test
+```
+
+Läuft auch in CI (Job `rust-core` in `.github/workflows/rts-tests.yml`). Später als WASM im Browser oder nativ mit wgpu (echtes Vulkan auf dem Desktop) nutzbar.
+
+## Deployment (dauerhaft)
+
+- **GitHub Pages**: Branch `vibe/lastwar-rts-713b03` → https://djanco88.github.io/lastwar-trainer/
+- **Netlify**: Repo in der Netlify-App verbinden, `netlify.toml` (publish = `.`) → Haupt-Branch plus Branch-Deploys für PRs
+- **Cloudflare Pages**: Repo in Cloudflare Pages verbinden oder `wrangler pages deploy . --project-name=lastwar-trainer` (siehe `wrangler.toml`)
+
+## Sentry (optional, ohne Keys im Repo)
+
+In der Browser-Konsole vor dem Neuladen:
+
+```js
+localStorage.setItem('SENTRY_DSN', 'https://<key>@o<org>.ingest.sentry.io/<projekt-id>')
+```
+
+`index.html` lädt Sentry dann automatisch (Inline-Skript im `<head>`), sonst läuft das Spiel ohne Monitoring weiter.

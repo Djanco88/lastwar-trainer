@@ -19,6 +19,29 @@ window.addEventListener('unhandledrejection', function (e) {
   d.textContent = 'Promise-Fehler: ' + (e.reason && e.reason.message ? e.reason.message : e.reason);
 });
 </script>
+<script>
+// Optionales Sentry-Monitoring (DSN wird NIEMALS im Repo committed).
+// Aktivierung z.B. in der Browser-Konsole vor dem Neuladen:
+//   localStorage.setItem('SENTRY_DSN', 'https://<key>@o<org>.ingest.sentry.io/<projekt>')
+// oder vor dem Laden der Seite: window.SENTRY_DSN = '...'
+(function () {
+  var dsn = window.SENTRY_DSN;
+  if (!dsn) { try { dsn = localStorage.getItem('SENTRY_DSN'); } catch (e) { dsn = null; } }
+  if (!dsn) return;
+  var s = document.createElement('script');
+  s.src = 'https://browser.sentry-cdn.com/7.114.0/bundle.min.js';
+  s.crossOrigin = 'anonymous';
+  s.onload = function () {
+    try {
+      if (window.Sentry) {
+        Sentry.init({ dsn: dsn, tracesSampleRate: 0.1, sendDefaultPii: false });
+      }
+    } catch (e) { /* Monitoring optional, Spiel laeuft ohne Sentry weiter */ }
+  };
+  s.onerror = function () { /* offline / file:// -> ignorieren */ };
+  document.head.appendChild(s);
+})();
+</script>
 </head>
 <body>
 <div id="app">
