@@ -232,14 +232,14 @@ LW.render3d = {
 
   ensureBuf: function (which, floats, perInst) {
     perInst = perInst || 20;
-    var cap = this[which + 'cap'];
-    if (floats > cap) {
+    var cap = this[which + 'cap'] || 0;
+    if (!this[which] || floats > cap) {
       var ncap = Math.max(1024, cap * 2);
       while (ncap < floats) ncap *= 2;
       this[which] = this.device.createBuffer({ size: ncap * 4, usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST });
       this[which + 'cap'] = ncap;
     }
-    this.device.queue.writeBuffer(this[which], 0, new Float32Array(floats));
+    if (floats > 0) this.device.queue.writeBuffer(this[which], 0, new Float32Array(floats));
     return Math.floor(floats / perInst);
   },
 
