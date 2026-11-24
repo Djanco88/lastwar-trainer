@@ -88,7 +88,7 @@ LW.input = {
       return;
     }
     if (this.targetB) {
-      core.launchSuper('player', this.targetB, wx, wy);
+      core.launchSuper('player', this.targetB.id, wx, wy, this.targetB.which);
       this.targetB = null;
       return;
     }
@@ -163,13 +163,17 @@ LW.input = {
       if (!rr.ok) { core.pushEvent(rr.reason, 'warn'); if (LW.audio) LW.audio.play('error'); }
     } else if (kind === 'super') {
       var ready = p.buildings.find(function (x) { return x.superReady; });
-      if (ready) this.startTarget(ready.id);
-      else { core.pushEvent('Keine Superwaffe bereit.', 'warn'); if (LW.audio) LW.audio.play('error'); }
+      if (ready) this.startTarget(ready.id, '1');
+      else {
+        var ready2 = p.buildings.find(function (x) { return x.super2 && x.super2.ready; });
+        if (ready2) this.startTarget(ready2.id, '2');
+        else { core.pushEvent('Keine Superwaffe bereit.', 'warn'); if (LW.audio) LW.audio.play('error'); }
+      }
     } else if (kind === 'mute') {
       if (LW.audio) { LW.audio.muted = !LW.audio.muted; document.getElementById('btn-mute').textContent = LW.audio.muted ? '🔇' : '🔊'; }
     }
   },
 
   startPlacing: function (key) { this.placing = key; this.targetB = null; },
-  startTarget: function (bId) { this.targetB = bId; this.placing = null; },
+  startTarget: function (bId, which) { this.targetB = { id: bId, which: which || '1' }; this.placing = null; },
 };

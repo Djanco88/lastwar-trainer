@@ -69,6 +69,13 @@ LW.render = {
       case 'sam': c.fillRect(cx - 9, cy - 9, 18, 18); c.fillStyle = '#0d1218'; for (var m = 0; m < 4; m++) c.fillRect(cx - 8 + m * 4, cy - 12, 3, 6); break;
       case 'weather': c.beginPath(); c.arc(cx, cy, 12, Math.PI * 0.15 + st.time * 0.3, Math.PI * 0.85 + st.time * 0.3); c.stroke(); c.beginPath(); c.moveTo(cx, cy); c.lineTo(cx, cy + 12); c.stroke(); break;
       case 'lab': c.beginPath(); c.arc(cx, cy, 11, 0, Math.PI * 2); c.stroke(); c.beginPath(); c.arc(cx - 4, cy, 2.5, 0, Math.PI * 2); c.arc(cx + 4, cy, 2.5, 0, Math.PI * 2); c.fill(); break;
+      case 'diffuser': c.beginPath(); c.arc(cx, cy, 12, 0, Math.PI * 2); c.stroke(); c.beginPath(); c.arc(cx, cy, 6, 0, Math.PI * 2); c.fill(); break;
+    }
+    if (b.type === 'diffuser' && !b.constructing) {
+      c.fillStyle = 'rgba(127,212,255,0.07)';
+      c.beginPath(); c.arc(cx, cy, LW.cfg.buildings.diffuser.aura, 0, Math.PI * 2); c.fill();
+      c.strokeStyle = 'rgba(127,212,255,0.25)'; c.setLineDash([4, 6]); c.lineWidth = 1;
+      c.beginPath(); c.arc(cx, cy, LW.cfg.buildings.diffuser.aura, 0, Math.PI * 2); c.stroke(); c.setLineDash([]);
     }
     if (b.irradiated > 0) { c.strokeStyle = '#6fe06f'; c.lineWidth = 3; c.strokeRect(x - 2, y - 2, w + 4, h + 4); }
     if (b.constructing) {
@@ -108,9 +115,32 @@ LW.render = {
     c.save();
     c.translate(u.x, u.y);
     c.rotate(u.angle);
+    var shape = cfg.units[u.type].shape;
     if (u.cls === 'aircraft') {
       c.fillStyle = fac.color;
-      c.beginPath(); c.moveTo(10, 0); c.lineTo(-8, 6); c.lineTo(-4, 0); c.lineTo(-8, -6); c.closePath(); c.fill();
+      if (shape === 'saucer') {
+        c.beginPath(); c.ellipse(0, 0, 11, 5, 0, 0, Math.PI * 2); c.fill();
+        c.beginPath(); c.arc(0, -3, 4, Math.PI, 0); c.fill();
+      } else {
+        c.beginPath(); c.moveTo(10, 0); c.lineTo(-8, 6); c.lineTo(-4, 0); c.lineTo(-8, -6); c.closePath(); c.fill();
+      }
+    } else if (shape === 'blob') {
+      c.fillStyle = '#241031';
+      c.beginPath(); c.arc(0, 0, 7, 0, Math.PI * 2); c.fill();
+      c.strokeStyle = fac.color; c.lineWidth = 2; c.stroke();
+      c.fillStyle = '#ff4d6d'; c.beginPath(); c.arc(-2.5, -1.5, 1.6, 0, Math.PI * 2); c.arc(2.5, -1.5, 1.6, 0, Math.PI * 2); c.fill();
+    } else if (shape === 'orb') {
+      c.fillStyle = fac.color;
+      c.globalAlpha = 0.55 + 0.3 * Math.sin(st.time * 5 + u.id);
+      c.beginPath(); c.arc(0, 0, 7, 0, Math.PI * 2); c.fill();
+      c.globalAlpha = 1;
+      c.fillStyle = '#fff'; c.beginPath(); c.arc(0, 0, 3, 0, Math.PI * 2); c.fill();
+    } else if (shape === 'hex') {
+      c.fillStyle = '#2c1a40';
+      c.beginPath();
+      for (var hi = 0; hi < 6; hi++) { var ha = hi * Math.PI / 3 + u.angle; var hx = Math.cos(ha) * 10, hy = Math.sin(ha) * 10; if (hi === 0) c.moveTo(hx, hy); else c.lineTo(hx, hy); }
+      c.closePath(); c.fill();
+      c.strokeStyle = fac.color; c.lineWidth = 2; c.stroke();
     } else if (u.cls === 'vehicle') {
       c.fillStyle = u.type === 'harvester' ? '#c9a44a' : fac.color;
       c.fillRect(-9, -6, 18, 12);
@@ -159,6 +189,28 @@ LW.render = {
       var d = st.decals[i];
       c.fillStyle = 'rgba(12,9,6,0.55)';
       c.beginPath(); c.ellipse(d.x, d.y, d.r, d.r * 0.8, 0, 0, Math.PI * 2); c.fill();
+    }
+    for (i = 0; i < st.singularities.length; i++) {
+      var sg = st.singularities[i];
+      c.fillStyle = 'rgba(120,60,200,0.10)';
+      c.beginPath(); c.arc(sg.x, sg.y, sg.r, 0, Math.PI * 2); c.fill();
+      c.strokeStyle = 'rgba(150,80,255,0.35)'; c.setLineDash([4, 6]); c.lineWidth = 1;
+      c.beginPath(); c.arc(sg.x, sg.y, sg.r, 0, Math.PI * 2); c.stroke(); c.setLineDash([]);
+      var acc = sg.core * 2 * (1 + 0.15 * Math.sin(st.time * 6));
+      c.strokeStyle = '#b46bff'; c.lineWidth = 3;
+      c.beginPath(); c.arc(sg.x, sg.y, acc, 0, Math.PI * 2); c.stroke();
+      c.fillStyle = '#000';
+      c.beginPath(); c.arc(sg.x, sg.y, sg.core, 0, Math.PI * 2); c.fill();
+    }
+    for (i = 0; i < st.beams.length; i++) {
+      var bm = st.beams[i];
+      var ba = Math.max(0, bm.left / bm.max);
+      c.strokeStyle = 'rgba(170,240,255,' + (0.9 * ba) + ')';
+      c.lineWidth = 2 + 9 * ba;
+      c.beginPath(); c.moveTo(bm.x1, bm.y1); c.lineTo(bm.x2, bm.y2); c.stroke();
+      c.strokeStyle = 'rgba(255,255,255,' + (0.8 * ba) + ')';
+      c.lineWidth = 2 * ba;
+      c.beginPath(); c.moveTo(bm.x1, bm.y1); c.lineTo(bm.x2, bm.y2); c.stroke();
     }
     for (i = 0; i < st.storms.length; i++) {
       var sm = st.storms[i];

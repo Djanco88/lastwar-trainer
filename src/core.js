@@ -20,6 +20,7 @@ LW.core = {
       seed: seed, time: 0, tick: 0, over: null, shake: 0, nextId: 1,
       occ: new Int32Array(LW.map.W * LW.map.H),
       projectiles: [], missiles: [], storms: [], particles: [], decals: [], events: [],
+      singularities: [], beams: [],
       aiTimer: 0, aiNextWave: cfg.ai.waveStart,
       sides: { player: this.newSide('player'), enemy: this.newSide('enemy') },
     };
@@ -287,6 +288,7 @@ LW.core = {
     if (q.kind === 'research') {
       s.research[q.key] = true;
       this.pushEvent('Forschung abgeschlossen: ' + cfg.research[q.key].name, 'good');
+      if (q.key === 'quark') this.spawnSingularities(b.side, cfg.singularity.count);
       if (LW.audio) LW.audio.play('build');
       return true;
     }
@@ -537,6 +539,19 @@ LW.core = {
         }
       }
     }
+    if (b.type === 'weather' && s.research.npulse && !b.offline) {
+      if (!b.super2) b.super2 = { key: 'npulse', charge: 0, chargeMax: cfg.super.npulse.charge, ready: false };
+      var s2 = b.super2;
+      if (!s2.ready) {
+        s2.charge += dt;
+        if (s2.charge >= s2.chargeMax) {
+          s2.charge = s2.chargeMax;
+          s2.ready = true;
+          this.pushEvent('Superwaffe bereit: ' + cfg.super.npulse.name, 'good');
+          if (LW.audio) LW.audio.play('ready');
+        }
+      }
+    }
   },
 
   updatePower: function (sideKey) {
@@ -600,19 +615,28 @@ LW.core = {
     else if (!pHQ) { st.over = 'lose'; this.pushEvent('Niederlage! Die Kommandozentrale wurde zerstört.', 'warn'); }
   },
 
-  explode: function (x, y, rTiles, dmg, side) {
+  explode: function (x, y, rTiles, dmg, side, kind, anti) {
     var cfg = LW.cfg, st = this.state, r = rTiles * cfg.tile;
+    var src = kind || 'nuke';
     for (var sk in st.sides) {
       var s = st.sides[sk], i;
       var us = s.units.slice();
       for (i = 0; i < us.length; i++) {
         var d = LW.util.dist(us[i].x, us[i].y, x, y);
-        if (d <= r) this.damage(us[i], dmg * (1 - 0.6 * d / r), 'nuke', side);
+        if (d <= r) this.damage(us[i], dmg * (1 - 0.6 * d / r), src, side);
       }
       var bs = s.buildings.slice();
       for (i = 0; i < bs.length; i++) {
         var d2 = LW.util.dist(bs[i].x, bs[i].y, x, y);
-        if (d2 <= r) this.damage(bs[i], dmg * (1 - 0.6 * d2 / r), 'nuke', side);
+        if (d2 <= r) this.damage(bs[i], dmg * (1 - 0.6 * d2 / r), src, side);
+      }
+    }
+    if (anti) {
+      for (var si = st.singularities.length - 1; si >= 0; si--) {
+        if (LW.util.dist(st.singularities[si].x, st.singularities[si].y, x, y) <= r) {
+          st.singularities.splice(si, 1);
+          this.pushEvent('Nano-Schwarzes Loch annihiliert!', 'good');
+        }
       }
     }
     st.decals.push({ x: x, y: y, r: r * 0.85 });
@@ -625,25 +649,67 @@ LW.core = {
     if (LW.audio) LW.audio.play('explosion');
   },
 
-  launchSuper: function (side, bId, x, y) {
+  launchSuper: function (side, bId, x, y, which) {
     var cfg = LW.cfg, st = this.state, map = LW.map;
     var b = this.findBuilding(side, bId);
-    if (!b || !b.superReady) return { ok: false, reason: 'Superwaffe nicht bereit' };
+    if (!b) return { ok: false, reason: 'Gebäude nicht gefunden' };
+    var track = which === '2' ? b.super2 : b;
+    if (!track) return { ok: false, reason: 'Kein zweiter Superwaffen-Slot' };
+    var ready = which === '2' ? track.ready : track.superReady;
+    var key = which === '2' ? track.key : track.superKey;
+    if (!ready || !key) return { ok: false, reason: 'Superwaffe nicht bereit' };
     x = LW.util.clamp(x, 16, map.W * cfg.tile - 16);
     y = LW.util.clamp(y, 16, map.H * cfg.tile - 16);
-    var key = b.superKey, sup = cfg.super[key];
+    var sup = cfg.super[key];
     if (key === 'storm') {
       st.storms.push({ x: x, y: y, r: sup.radius * cfg.tile, side: side, left: sup.duration, acc: 0 });
       this.pushEvent(sup.name + ' entfesselt!', 'warn');
       if (LW.audio) LW.audio.play('storm');
+    } else if (key === 'npulse') {
+      st.beams.push({ x1: b.x, y1: b.y, x2: x, y2: y, side: side, left: 0.7, max: 0.7 });
+      var wpx = sup.width * cfg.tile / 2;
+      var other = this.otherSide(side), os = st.sides[other], j;
+      var ous = os.units.slice();
+      for (j = 0; j < ous.length; j++) {
+        if (LW.util.distToSegment(ous[j].x, ous[j].y, b.x, b.y, x, y) <= wpx) this.damage(ous[j], sup.dmg, 'npulse', side);
+      }
+      var obs = os.buildings.slice();
+      for (j = 0; j < obs.length; j++) {
+        if (LW.util.distToSegment(obs[j].x, obs[j].y, b.x, b.y, x, y) <= wpx) this.damage(obs[j], sup.dmg * 0.8, 'npulse', side);
+      }
+      this.pushEvent(sup.name + ' abgefeuert!', 'warn');
+      if (LW.audio) LW.audio.play('launch');
     } else {
       st.missiles.push({ x: b.x, y: b.y - 20, tx: x, ty: y, t: 0, dur: sup.missile, kind: key, side: side, px: b.x, py: b.y - 20 });
       this.pushEvent(sup.name + ' gestartet!', 'warn');
       if (LW.audio) LW.audio.play('launch');
     }
-    b.superReady = false;
-    b.charge = 0;
+    if (which === '2') { track.ready = false; track.charge = 0; }
+    else { b.superReady = false; b.charge = 0; }
     return { ok: true };
+  },
+
+  spawnSingularities: function (side, n) {
+    var cfg = LW.cfg, map = LW.map, st = this.state;
+    var placed = 0, tries = 0, i;
+    while (placed < n && tries < 400) {
+      tries++;
+      var tx = 2 + Math.floor(this.rng() * (map.W - 4));
+      var ty = 2 + Math.floor(this.rng() * (map.H - 4));
+      if (map.tiles[map.ti(tx, ty)] !== 0) continue;
+      var x = (tx + 0.5) * cfg.tile, y = (ty + 0.5) * cfg.tile;
+      var ok = true;
+      for (i = 0; i < st.sides.player.buildings.length; i++) if (LW.util.dist(x, y, st.sides.player.buildings[i].x, st.sides.player.buildings[i].y) < 4 * cfg.tile) ok = false;
+      for (i = 0; i < st.sides.enemy.buildings.length; i++) if (LW.util.dist(x, y, st.sides.enemy.buildings[i].x, st.sides.enemy.buildings[i].y) < 4 * cfg.tile) ok = false;
+      for (i = 0; i < st.singularities.length; i++) if (LW.util.dist(x, y, st.singularities[i].x, st.singularities[i].y) < 8 * cfg.tile) ok = false;
+      if (!ok) continue;
+      st.singularities.push({ x: x, y: y, r: cfg.singularity.pullRadius * cfg.tile, core: cfg.singularity.coreRadius * cfg.tile, side: side, exposure: 0 });
+      placed++;
+    }
+    if (placed > 0) {
+      this.pushEvent('Quarkbosonspalten aktiv: ' + placed + ' Nano-Schwarze-Löcher auf der Karte!', 'warn');
+      if (LW.audio) LW.audio.play('storm');
+    }
   },
 
   spark: function (x, y) {
@@ -692,7 +758,12 @@ LW.core = {
       st.particles.push({ x: m.px, y: m.py + 8, vx: 0, vy: 30, life: 0.25, max: 0.25, size: 4, color: '#ffb347' });
       if (f >= 1) {
         var sup = cfg.super[m.kind];
-        this.explode(m.tx, m.ty, sup.radius, sup.dmg, m.side);
+        var anti = false;
+        if (m.kind === 'hbomb' && st.sides[m.side].research.antimatter) {
+          sup = { key: 'hbomb', name: sup.name + ' (Antimaterie)', radius: cfg.antimatterHbomb.radius, dmg: cfg.antimatterHbomb.dmg, missile: sup.missile, holder: 'silo' };
+          anti = true;
+        }
+        this.explode(m.tx, m.ty, sup.radius, sup.dmg, m.side, m.kind, anti);
         st.missiles.splice(i, 1);
       }
     }
@@ -724,6 +795,49 @@ LW.core = {
         st.particles.push({ x: lx, y: ly - 60 - this.rng() * 40, x2: lx, y2: ly, vx: 0, vy: 0, life: 0.16, max: 0.16, size: 2, color: '#c9a2ff', bolt: true });
       }
       if (sm.left <= 0) st.storms.splice(i, 1);
+    }
+    var sgc = cfg.singularity;
+    for (i = st.singularities.length - 1; i >= 0; i--) {
+      var sg = st.singularities[i];
+      for (sk in st.sides) {
+        var sun = st.sides[sk].units.slice();
+        for (var sj = 0; sj < sun.length; sj++) {
+          var uu = sun[sj];
+          var dd = LW.util.dist(uu.x, uu.y, sg.x, sg.y);
+          if (dd < sg.core) { this.damage(uu, 1e9, 'quark', sg.side); continue; }
+          if (dd < sg.r) {
+            var pull = (1 - dd / sg.r) * sgc.pullForce * (uu.cls === 'aircraft' ? sgc.aircraftPullFactor : 1) * dt;
+            uu.x += (sg.x - uu.x) / dd * pull;
+            uu.y += (sg.y - uu.y) / dd * pull;
+          }
+        }
+      }
+    }
+    for (sk in st.sides) {
+      var dbs = st.sides[sk].buildings;
+      for (i = 0; i < dbs.length; i++) {
+        var db = dbs[i];
+        if (db.type !== 'diffuser' || db.constructing || db.offline) continue;
+        for (var di = st.singularities.length - 1; di >= 0; di--) {
+          var sg2 = st.singularities[di];
+          if (LW.util.dist(sg2.x, sg2.y, db.x, db.y) <= cfg.buildings.diffuser.aura) {
+            sg2.exposure += dt;
+            if (sg2.exposure >= sgc.diffuserKillTime) {
+              var px2 = sg2.x, py2 = sg2.y;
+              st.singularities.splice(di, 1);
+              for (var pk = 0; pk < 30; pk++) {
+                var pa = this.rng() * Math.PI * 2, ps = 40 + this.rng() * 120;
+                st.particles.push({ x: px2, y: py2, vx: Math.cos(pa) * ps, vy: Math.sin(pa) * ps, life: 0.6, max: 0.6, size: 4, color: '#7fd4ff' });
+              }
+              this.pushEvent('Nano-Schwarzes Loch von Diffusormatrix annihiliert!', 'good');
+            }
+          }
+        }
+      }
+    }
+    for (i = st.beams.length - 1; i >= 0; i--) {
+      st.beams[i].left -= dt;
+      if (st.beams[i].left <= 0) st.beams.splice(i, 1);
     }
     for (i = st.particles.length - 1; i >= 0; i--) {
       var pt = st.particles[i];

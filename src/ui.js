@@ -164,13 +164,20 @@ LW.ui = {
       html += '<div class="super-row"><b>' + cfg.buildings[b.type].name + '</b><br>' +
         '<span style="font-size:10px;color:#9fb4c6">' + supName + (b.offline ? ' · offline (Strom!)' : '') + '</span>' +
         '<div class="bar"><div style="width:' + (frac * 100).toFixed(1) + '%"></div></div>' +
-        '<button data-bid="' + b.id + '"' + (b.superReady ? ' class="armed"' : ' disabled') + '>ZIEL WÄHLEN</button></div>';
+        '<button data-bid="' + b.id + '" data-which="1"' + (b.superReady ? ' class="armed"' : ' disabled') + '>ZIEL WÄHLEN</button></div>';
+      if (b.super2) {
+        var s2 = b.super2;
+        var f2 = s2.chargeMax > 0 ? s2.charge / s2.chargeMax : 0;
+        html += '<div class="super-row" style="margin-top:4px"><span style="font-size:10px;color:#c9a2ff">' + cfg.super[s2.key].name + '</span>' +
+          '<div class="bar"><div style="width:' + (f2 * 100).toFixed(1) + '%"></div></div>' +
+          '<button data-bid="' + b.id + '" data-which="2"' + (s2.ready ? ' class="armed"' : ' disabled') + '>STRAHL-ZIEL WÄHLEN</button></div>';
+      }
     }
     if (!any) html = '<div style="color:#7f96ab;font-size:11px">Noch kein Superwaffen-Gebäude gebaut.</div>';
     el.innerHTML = html;
     var btns = el.querySelectorAll('button[data-bid]');
     for (i = 0; i < btns.length; i++) {
-      btns[i].addEventListener('click', function () { LW.input.startTarget(parseInt(this.dataset.bid, 10)); });
+      btns[i].addEventListener('click', function () { LW.input.startTarget(parseInt(this.dataset.bid, 10), this.dataset.which || '1'); });
     }
   },
 

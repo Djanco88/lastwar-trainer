@@ -97,6 +97,10 @@ LW.ai = {
         var t2 = p.buildings.find(function (x) { return x.type === 'hq'; }) || p.buildings[0];
         core.launchSuper('enemy', b2.id, t2.x + (core.rng() * 60 - 30), t2.y + (core.rng() * 60 - 30));
       }
+      if (b2.super2 && b2.super2.ready && p.buildings.length) {
+        var t3 = p.buildings.find(function (x) { return x.type === 'hq'; }) || p.buildings[0];
+        core.launchSuper('enemy', b2.id, t3.x + (core.rng() * 40 - 20), t3.y + (core.rng() * 40 - 20), '2');
+      }
     }
   },
 };
