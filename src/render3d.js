@@ -20,6 +20,9 @@ LW.render3d = {
       if (!adapter) return false;
       return adapter.requestDevice().then(function (device) {
         self.device = device;
+        device.onuncapturederror = function (ev) {
+          if (typeof console !== 'undefined') console.warn('WebGPU uncaptured error:', ev.error && ev.error.message);
+        };
         self.ctx = canvas.getContext('webgpu');
         if (!self.ctx) return false;
         self.format = navigator.gpu.getPreferredCanvasFormat();
@@ -226,7 +229,8 @@ LW.render3d = {
     arr.push(c * sx, 0, -s * sx, 0, 0, sy, 0, 0, s * sz, 0, c * sz, 0, px, py, pz, 1, r, g, b, a);
   },
 
-  ensureBuf: function (which, floats) {
+  ensureBuf: function (which, floats, perInst) {
+    perInst = perInst || 20;
     var cap = this[which + 'cap'];
     if (floats > cap) {
       var ncap = Math.max(1024, cap * 2);
@@ -235,7 +239,7 @@ LW.render3d = {
       this[which + 'cap'] = ncap;
     }
     this.device.queue.writeBuffer(this[which], 0, new Float32Array(floats));
-    return Math.floor(floats / 20);
+    return Math.floor(floats / perInst);
   },
 
   hex: function (h) {
@@ -253,14 +257,16 @@ LW.render3d = {
   },
 
   draw: function () {
-    if (!this.ready) return;
+    if (!this.ready || !this.active) return;
+    try {
     var cfg = LW.cfg, map = LW.map, st = LW.core.state, input = LW.input;
     var canvas = this.canvas, dev = this.device;
     var vw = canvas.width || 1280, vh = canvas.height || 720;
-    if (canvas.width !== vw || canvas.height !== vh) {
+    if (!this.depthTex || this.depthW !== vw || this.depthH !== vh) {
       canvas.width = vw; canvas.height = vh;
       if (this.depthTex) this.depthTex.destroy();
       this.depthTex = dev.createTexture({ size: [vw, vh], format: 'depth24plus', usage: GPUTextureUsage.RENDER_ATTACHMENT });
+      this.depthW = vw; this.depthH = vh;
     }
     var zoom = input.zoom || 0.75;
     var halfW = vw / (2 * zoom), halfH = vh / (2 * zoom);
@@ -426,7 +432,7 @@ LW.render3d = {
     var nOO = this.ensureBuf('dynOO', OO);
     var nBT = this.ensureBuf('dynBT', BT);
     var nOT = this.ensureBuf('dynOT', OT);
-    var nPT = this.ensureBuf('partBuf', PT);
+    var nPT = this.ensureBuf('partBuf', PT, 8);
 
     var enc = dev.createCommandEncoder();
     var pass = enc.beginRenderPass({
@@ -455,6 +461,13 @@ LW.render3d = {
     pass.draw(this.quadVerts, nPT);
     pass.end();
     dev.queue.submit([enc.finish()]);
+    } catch (err) {
+      this.active = false;
+      this.ready = false;
+      if (typeof console !== 'undefined') console.error('3D-Renderer deaktiviert, Fallback auf 2D:', err);
+      var d = typeof document !== 'undefined' && document.getElementById('errbanner');
+      if (d) d.textContent = 'WebGPU-Fehler (Fallback 2D aktiv): ' + (err && err.message ? err.message : err);
+    }
   },
 
   screenToWorld: function (sx, sy) {

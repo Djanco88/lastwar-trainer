@@ -21,6 +21,12 @@ window.addEventListener('load', function () {
     use3d = !!ok;
     if (LW.render3d) LW.render3d.active = use3d;
     if (!use3d && typeof console !== 'undefined') console.info('WebGPU nicht verfügbar — 2D-Canvas-Fallback aktiv.');
+    var badge = document.createElement('span');
+    badge.className = 'tb-item';
+    badge.id = 'tb-mode';
+    badge.textContent = use3d ? '3D (WebGPU/Vulkan)' : '2D-Fallback';
+    badge.style.color = use3d ? '#9fe6a0' : '#ffd23c';
+    document.getElementById('topbar').appendChild(badge);
     var last = performance.now(), acc = 0;
     function frame(now) {
       var dt = (now - last) / 1000;
@@ -34,7 +40,7 @@ window.addEventListener('load', function () {
         steps++;
       }
       if (acc > 0.25) acc = 0.25;
-      if (use3d) LW.render3d.draw();
+      if (LW.render3d && LW.render3d.active) LW.render3d.draw();
       else LW.render.draw();
       LW.ui.update();
       requestAnimationFrame(frame);
