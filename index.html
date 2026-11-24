@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LASTWAR — RTS-Prototyp</title>
+<link rel="stylesheet" href="style.css">
+<script>
+window.addEventListener('error', function (e) {
+  var d = document.getElementById('errbanner');
+  if (!d) { d = document.createElement('div'); d.id = 'errbanner'; document.body.appendChild(d); }
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#a02020;color:#fff;padding:6px 10px;font:13px monospace;z-index:999;white-space:pre-wrap;';
+  d.textContent = 'Fehler: ' + (e.message || e.type) + (e.filename ? '  @ ' + e.filename + ':' + e.lineno : '');
+});
+window.addEventListener('unhandledrejection', function (e) {
+  var d = document.getElementById('errbanner');
+  if (!d) { d = document.createElement('div'); d.id = 'errbanner'; document.body.appendChild(d); }
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#a02020;color:#fff;padding:6px 10px;font:13px monospace;z-index:999;white-space:pre-wrap;';
+  d.textContent = 'Promise-Fehler: ' + (e.reason && e.reason.message ? e.reason.message : e.reason);
+});
+</script>
+<script>
+// Optionales Sentry-Monitoring (DSN wird NIEMALS im Repo committed).
+// Aktivierung z.B. in der Browser-Konsole vor dem Neuladen:
+//   localStorage.setItem('SENTRY_DSN', 'https://<key>@o<org>.ingest.sentry.io/<projekt>')
+// oder vor dem Laden der Seite: window.SENTRY_DSN = '...'
+(function () {
+  var dsn = window.SENTRY_DSN;
+  if (!dsn) { try { dsn = localStorage.getItem('SENTRY_DSN'); } catch (e) { dsn = null; } }
+  if (!dsn) return;
+  var s = document.createElement('script');
+  s.src = 'https://browser.sentry-cdn.com/7.114.0/bundle.min.js';
+  s.crossOrigin = 'anonymous';
+  s.onload = function () {
+    try {
+      if (window.Sentry) {
+        Sentry.init({ dsn: dsn, tracesSampleRate: 0.1, sendDefaultPii: false });
+      }
+    } catch (e) { /* Monitoring optional, Spiel laeuft ohne Sentry weiter */ }
+  };
+  s.onerror = function () { /* offline / file:// -> ignorieren */ };
+  document.head.appendChild(s);
+})();
+</script>
+</head>
+<body>
+<div id="app">
+  <div id="topbar">
+    <span class="tb-item" id="tb-credits">Credits: 0</span>
+    <span class="tb-item" id="tb-income"></span>
+    <span class="tb-item" id="tb-units">Einheiten: 0</span>
+    <span class="tb-item" id="tb-time">0:00</span>
+    <span class="tb-item tb-right">
+      <button id="btn-mute" class="mini-btn" title="Ton an/aus (M)">🔊</button>
+    </span>
+  </div>
+  <canvas id="game"></canvas>
+  <div id="sidebar"></div>
+  <div id="messages"></div>
+  <div id="overlay" class="hidden">
+    <div id="overlay-box">
+      <h1 id="overlay-title"></h1>
+      <p id="overlay-text"></p>
+      <button id="btn-restart">Neu starten</button>
+    </div>
+  </div>
+</div>
+<script src="src/config.js"></script>
+<script src="src/utils.js"></script>
+<script src="src/map.js"></script>
+<script src="src/core.js"></script>
+<script src="src/ai.js"></script>
+<script src="src/audio.js"></script>
+<script src="src/render.js"></script>
+<script src="src/render3d.js"></script>
+<script src="src/ui.js"></script>
+<script src="src/input.js"></script>
+<script src="src/main.js"></script>
+</body>
+</html>
