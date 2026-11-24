@@ -13,16 +13,15 @@ LW.input = {
   shiftDown: false,
 
   init: function () {
-    var canvas = document.getElementById('game');
-    this.canvas = canvas;
+    this.bindWindow();
+    this.bindCanvas(document.getElementById('game'));
+  },
+
+  bindWindow: function () {
     var self = this;
-    canvas.addEventListener('mousedown', function (e) {
-      if (e.button === 0) {
-        self.shiftDown = e.shiftKey;
-        self.drag = { x1: e.offsetX, y1: e.offsetY, x2: e.offsetX, y2: e.offsetY, moved: false };
-      }
-    });
     window.addEventListener('mousemove', function (e) {
+      var canvas = self.canvas;
+      if (!canvas) return;
       var r = canvas.getBoundingClientRect();
       var ps = self.pxScale || 1;
       self.mouse.sx = (e.clientX - r.left) * ps;
@@ -35,8 +34,22 @@ LW.input = {
     window.addEventListener('mouseup', function (e) {
       if (e.button === 0 && self.drag) {
         var d = self.drag; self.drag = null;
-        if (!d.moved) self.click(self.mouse.sx, self.mouse.sy, d ? self.shiftDown : false);
+        if (!d.moved) self.click(self.mouse.sx, self.mouse.sy, self.shiftDown);
         else self.boxSelect(d);
+      }
+    });
+    window.addEventListener('keydown', function (e) { self.onKey(e); });
+    window.addEventListener('resize', function () { self.resize(); });
+  },
+
+  bindCanvas: function (canvas) {
+    var self = this;
+    this.canvas = canvas;
+    canvas.addEventListener('mousedown', function (e) {
+      if (e.button === 0) {
+        var ps = self.pxScale || 1;
+        self.shiftDown = e.shiftKey;
+        self.drag = { x1: e.offsetX * ps, y1: e.offsetY * ps, x2: e.offsetX * ps, y2: e.offsetY * ps, moved: false };
       }
     });
     canvas.addEventListener('contextmenu', function (e) {
@@ -47,8 +60,6 @@ LW.input = {
       e.preventDefault();
       self.zoom = LW.util.clamp(self.zoom * (e.deltaY > 0 ? 0.88 : 1.14), 0.35, 1.6);
     }, { passive: false });
-    window.addEventListener('keydown', function (e) { self.onKey(e); });
-    window.addEventListener('resize', function () { self.resize(); });
     this.resize();
   },
 

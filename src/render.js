@@ -174,6 +174,7 @@ LW.render = {
     var st = LW.core.state, input = LW.input, cfg = LW.cfg, map = LW.map;
     var canvas = document.getElementById('game');
     var c = canvas.getContext('2d');
+    if (!c) return;
     c.fillStyle = '#0a0d10'; c.fillRect(0, 0, canvas.width, canvas.height);
     var cam = input.cam;
     var shx = (Math.random() - 0.5) * st.shake, shy = (Math.random() - 0.5) * st.shake;

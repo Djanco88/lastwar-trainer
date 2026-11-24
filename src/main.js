@@ -26,6 +26,16 @@ window.addEventListener('load', function () {
   Promise.resolve(initP).then(function (ok) {
     use3d = !!ok;
     if (LW.render3d) LW.render3d.active = use3d;
+    if (!use3d) {
+      var old = document.getElementById('game');
+      if (old) {
+        var nc = old.cloneNode(false);
+        nc.id = old.id;
+        nc.style.cssText = old.style.cssText;
+        old.parentNode.replaceChild(nc, old);
+        LW.input.bindCanvas(nc);
+      }
+    }
     if (!use3d && typeof console !== 'undefined') console.info('WebGPU nicht verfügbar — 2D-Canvas-Fallback aktiv.');
     var badge = document.createElement('span');
     badge.className = 'tb-item';
