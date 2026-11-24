@@ -15,6 +15,7 @@ LW.render3d = {
   init: function (canvas) {
     var self = this;
     if (typeof navigator === 'undefined' || !navigator.gpu || typeof document === 'undefined') return Promise.resolve(false);
+    if (typeof location !== 'undefined' && location.protocol === 'file:') return Promise.resolve(false);
     this.canvas = canvas;
     return navigator.gpu.requestAdapter().then(function (adapter) {
       if (!adapter) return false;

@@ -33,22 +33,37 @@ window.addEventListener('load', function () {
     badge.textContent = use3d ? '3D (WebGPU/Vulkan)' : '2D-Fallback';
     badge.style.color = use3d ? '#9fe6a0' : '#ffd23c';
     document.getElementById('topbar').appendChild(badge);
+    var frameErrShown = false;
+    function showBanner(text) {
+      var d = document.getElementById('errbanner');
+      if (!d) { d = document.createElement('div'); d.id = 'errbanner'; document.body.appendChild(d); }
+      d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#a02020;color:#fff;padding:6px 10px;font:12px monospace;z-index:999;white-space:pre-wrap;max-height:40vh;overflow:auto;';
+      d.textContent = text;
+    }
     var last = performance.now(), acc = 0;
     function frame(now) {
       var dt = (now - last) / 1000;
       last = now;
       acc += dt;
-      var steps = 0;
-      while (acc >= 1 / 60 && steps < 5) {
-        LW.core.tick(1 / 60);
-        LW.input.update(1 / 60);
-        acc -= 1 / 60;
-        steps++;
+      try {
+        var steps = 0;
+        while (acc >= 1 / 60 && steps < 5) {
+          LW.core.tick(1 / 60);
+          LW.input.update(1 / 60);
+          acc -= 1 / 60;
+          steps++;
+        }
+        if (acc > 0.25) acc = 0.25;
+        if (LW.render3d && LW.render3d.active) LW.render3d.draw();
+        else LW.render.draw();
+        LW.ui.update();
+      } catch (err) {
+        if (!frameErrShown) {
+          frameErrShown = true;
+          showBanner('Frame-Fehler: ' + (err && err.stack ? err.stack : err));
+        }
+        if (typeof console !== 'undefined') console.error(err);
       }
-      if (acc > 0.25) acc = 0.25;
-      if (LW.render3d && LW.render3d.active) LW.render3d.draw();
-      else LW.render.draw();
-      LW.ui.update();
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
