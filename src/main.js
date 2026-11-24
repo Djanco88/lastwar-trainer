@@ -1,6 +1,7 @@
 var LW = (typeof window !== 'undefined' ? (window.LW = window.LW || {}) : (globalThis.LW = globalThis.LW || {}));
 
 window.addEventListener('load', function () {
+  try {
   var seed = (Date.now() % 2147483647) | 0;
   LW.core.init(seed);
   LW.render.init();
@@ -39,5 +40,18 @@ window.addEventListener('load', function () {
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
+  }).catch(function (err) {
+    var d = document.getElementById('errbanner');
+    if (!d) { d = document.createElement('div'); d.id = 'errbanner'; document.body.appendChild(d); }
+    d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#a02020;color:#fff;padding:6px 10px;font:13px monospace;z-index:999;';
+    d.textContent = 'Boot-Fehler: ' + (err && err.stack ? err.stack : err);
+    if (typeof console !== 'undefined') console.error(err);
   });
+  } catch (err) {
+    if (typeof console !== 'undefined') console.error(err);
+    var d = document.getElementById('errbanner');
+    if (!d) { d = document.createElement('div'); d.id = 'errbanner'; document.body.appendChild(d); }
+    d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#a02020;color:#fff;padding:6px 10px;font:13px monospace;z-index:999;';
+    d.textContent = 'Boot-Fehler: ' + (err && err.stack ? err.stack : err);
+  }
 });

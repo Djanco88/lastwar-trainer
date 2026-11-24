@@ -5,6 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LASTWAR — RTS-Prototyp</title>
 <link rel="stylesheet" href="style.css">
+<script>
+window.addEventListener('error', function (e) {
+  var d = document.getElementById('errbanner');
+  if (!d) { d = document.createElement('div'); d.id = 'errbanner'; document.body.appendChild(d); }
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#a02020;color:#fff;padding:6px 10px;font:13px monospace;z-index:999;white-space:pre-wrap;';
+  d.textContent = 'Fehler: ' + (e.message || e.type) + (e.filename ? '  @ ' + e.filename + ':' + e.lineno : '');
+});
+window.addEventListener('unhandledrejection', function (e) {
+  var d = document.getElementById('errbanner');
+  if (!d) { d = document.createElement('div'); d.id = 'errbanner'; document.body.appendChild(d); }
+  d.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#a02020;color:#fff;padding:6px 10px;font:13px monospace;z-index:999;white-space:pre-wrap;';
+  d.textContent = 'Promise-Fehler: ' + (e.reason && e.reason.message ? e.reason.message : e.reason);
+});
+</script>
 </head>
 <body>
 <div id="app">
